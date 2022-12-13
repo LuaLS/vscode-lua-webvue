@@ -25,6 +25,7 @@
 import { computed } from "vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 import { ADDONS_DIRECTORY, REPOSITORY_NAME, REPOSITORY_OWNER } from "@/config";
+import { formatBytes } from "@/services/format.service";
 
 import type { Addon } from "@/services/addon.service";
 
@@ -33,11 +34,8 @@ const props = defineProps<{ addon: Addon }>();
 const description = computed(
   () => props.addon.description ?? "Description could not be loaded"
 );
-
-const bytesToKiloBytes = (bytes: number) => (bytes / 1024).toFixed(2);
-
 const size = computed(() => {
-  return `${bytesToKiloBytes(props.addon.size ?? 0)} KB`;
+  return formatBytes(props.addon.size ?? 0);
 });
 </script>
 
