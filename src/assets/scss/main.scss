@@ -1,0 +1,23 @@
+@use "fonts/FlowRounded";
+@use "fonts/Codicon";
+
+html,
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  // Set background to darker color when not in VS Code
+  &:not([data-vscode-theme-kind]) {
+    background-color: #282c34;
+  }
+}
+
+.placeholder {
+  font-family: "Flow Rounded";
+}
