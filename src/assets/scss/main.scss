@@ -29,3 +29,13 @@ body {
     }
   }
 }
+
+.truncate {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: var(--lh);
+  max-height: calc(var(--lines) * var(--lh));
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--lines);
+}

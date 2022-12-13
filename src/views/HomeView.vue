@@ -93,10 +93,9 @@ watch(
   }
 
   .addons {
-    .addon {
-      width: 100%;
-      margin: 1rem auto;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
   }
 }
 </style>
