@@ -6,7 +6,9 @@
       <vscode-panel-view id="browse">
         <div>
           <div class="controls">
-            <CodeIcon class="refresh" icon="refresh" @click="refreshAddons" />
+            <button class="refresh" aria-label="Refresh Addon List">
+              <CodeIcon icon="refresh" @click="refreshAddons" />
+            </button>
           </div>
           <div v-if="addonStore.loading" class="loading">
             <vscode-progress-ring />
@@ -75,10 +77,11 @@ watch(
   }
 
   .controls {
-    .refresh {
-      display: block;
-      width: fit-content;
-      margin: auto 0px auto auto;
+    display: flex;
+    justify-content: flex-end;
+
+    .refresh span {
+      vertical-align: middle;
     }
   }
 

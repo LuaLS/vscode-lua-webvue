@@ -16,6 +16,8 @@ export class Addon {
   readonly url: string;
   public name: string;
   public description?: string;
+  public tree?: TreeNode[];
+  public treeTruncated?: boolean;
   public config?: AddonConfig;
   /** Size of the addon in bytes */
   public size?: number;
@@ -45,7 +47,8 @@ export class Addon {
     try {
       const configFileRawURL = `${ADDONS_DIRECTORY}/${this.name}/${configFileNode.path}`;
       const response = (await downloadFile(configFileRawURL)) as AddonConfig;
-      return response;
+      this.config = response;
+      this.description = response.description;
     } catch (e) {
       throw new Error(
         `Could not download config file for "${this.name}" addon`
@@ -53,22 +56,24 @@ export class Addon {
     }
   }
 
-  /** Calculate the size of an addon */
-  async calculateSize() {
-    let size = 0;
-
+  /** Get the Git tree for this addon */
+  async getTree() {
     try {
       const response = await getGitTree(this.url, true);
-
-      for (const node of response.tree) {
-        if (node.size) {
-          size += node.size;
-        }
-      }
+      this.tree = response.tree;
+      this.treeTruncated = response.truncated;
     } catch (e) {
-      throw new Error(`Failed to get size of addon! (${e})`);
+      throw new Error(`Failed to get git tree for addon! (${e})`);
     }
+  }
 
-    return size;
+  /** Calculate the size of an addon */
+  calculateSize() {
+    if (!this.tree)
+      throw new Error(
+        `Could not get size of addon, git tree has not been retrieved!`
+      );
+
+    this.size = this.tree.reduce((sum, node) => (sum += node.size ?? 0), 0);
   }
 }

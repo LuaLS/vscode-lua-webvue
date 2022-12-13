@@ -48,25 +48,15 @@ export const useAddonStore = defineStore("addons", {
           console.warn("Addons folder has been truncated!");
         }
 
-        const promises = [];
-
         for (const node of tree.tree) {
           const addon = new Addon(node.path, node.url);
 
-          // Get addon data
-          Promise.allSettled([
+          Promise.all([
             addon.fetchConfigFile(),
-            addon.calculateSize(),
-          ]).then((results) => {
-            if (results[0].status === "fulfilled") {
-              addon.config = results[0].value;
-              addon.description = results[0].value.description;
-            }
-            if (results[1].status === "fulfilled") {
-              addon.size = results[1].value;
-            }
-            this.addons.push(addon);
-          });
+            addon.getTree().then(() => {
+              addon.calculateSize();
+            }),
+          ]).then(() => this.addons.push(addon));
         }
       } catch (e) {
         console.error(e);
