@@ -15,7 +15,9 @@
       </p>
     </div>
     <div class="right">
-      <button class="download"><CodeIcon icon="cloud-download" /></button>
+      <button class="download" @click="download">
+        <CodeIcon icon="cloud-download" />
+      </button>
       <div>{{ size }}</div>
     </div>
   </div>
@@ -25,6 +27,7 @@
 import { computed } from "vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 import { ADDONS_DIRECTORY, REPOSITORY_NAME, REPOSITORY_OWNER } from "@/config";
+import { vscode } from "@/services/vscode.service";
 import { formatBytes } from "@/services/format.service";
 
 import type { Addon } from "@/services/addon.service";
@@ -37,6 +40,27 @@ const description = computed(
 const size = computed(() => {
   return formatBytes(props.addon.size ?? 0);
 });
+
+/** Request that VS Code download an addon */
+const download = () => {
+  const tree = props.addon.tree;
+
+  if (!tree)
+    throw Error(`Tree does not exist for "${props.addon.name}" addon!`);
+
+  // Get just the data that is important
+  const data = tree.map((node) => {
+    return { path: node.path, type: node.path };
+  });
+
+  // Send command to VS Code to download the included tree
+  vscode.postMessage(
+    JSON.stringify({
+      command: "download",
+      tree: data,
+    })
+  );
+};
 </script>
 
 <style lang="scss">
@@ -45,6 +69,9 @@ const size = computed(() => {
   justify-content: space-between;
   align-items: stretch;
   gap: 0.2rem;
+  background-color: #5a5d5e1e;
+  padding: 0.3rem;
+  border-radius: 0.2rem;
 
   .left {
     h2 {
