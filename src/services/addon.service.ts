@@ -2,7 +2,7 @@ import axios from "axios";
 import { ADDONS_DIRECTORY } from "@/config";
 
 import type { TreeNode, TreeResponse } from "@/types/github";
-import { downloadFile, getGitTree } from "./github.service";
+import { downloadFile, getGitTree, getCommit } from "./github.service";
 
 export type AddonConfig = {
   name: string;
@@ -21,6 +21,7 @@ export class Addon {
   public config?: AddonConfig;
   /** Size of the addon in bytes */
   public size?: number;
+  public latestHash?: string;
 
   constructor(path: string, url: string) {
     this.path = path;
@@ -77,5 +78,17 @@ export class Addon {
       );
 
     this.size = this.tree.reduce((sum, node) => (sum += node.size ?? 0), 0);
+  }
+
+  /** Get the latest commit hash for this addon */
+  async getLatestHash() {
+    const commit = await getCommit(`${ADDONS_DIRECTORY}/${this.path}`);
+
+    if (!commit) {
+      console.error("Could not get latest hash!");
+      return;
+    }
+
+    this.latestHash = commit.sha;
   }
 }

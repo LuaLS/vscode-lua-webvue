@@ -9,6 +9,7 @@
         >
           {{ addon.name }}<CodeIcon icon="link-external" />
         </a>
+        <span class="hash"><CodeIcon icon="git-commit" /> {{ hash }}</span>
       </h2>
       <p class="description truncate">
         {{ description }}
@@ -40,6 +41,7 @@ const description = computed(
 const size = computed(() => {
   return formatBytes(props.addon.size ?? 0);
 });
+const hash = computed(() => props.addon.latestHash?.slice(0, 7));
 
 /** Request that VS Code download an addon */
 const download = () => {
@@ -70,30 +72,47 @@ const download = () => {
   justify-content: space-between;
   align-items: stretch;
   gap: 0.2rem;
-  background-color: #5a5d5e1e;
+  background-color: #b3b3b326;
   padding: 0.3rem;
   border-radius: 0.2rem;
+  font-size: 1.3em;
 
   .left {
     h2 {
-      margin: 0px 0px 0.3rem 0px;
-      padding: 0.1em;
-      border-radius: 0.1em;
+      margin: 0px;
       width: fit-content;
 
       a {
+        display: inline-block;
+        border-radius: 0.1em;
+        padding: 0.1em;
         color: inherit;
         text-decoration: none;
 
         span.codicon[class*="codicon-"] {
-          font-size: 0.4em;
+          font-size: 0.3em;
           vertical-align: top;
           margin: 0.2em 0px 0px 0.2em;
         }
+
+        &:hover {
+          background: rgba(90, 93, 94, 0.31);
+        }
       }
 
-      &:hover {
-        background: rgba(90, 93, 94, 0.31);
+      .hash {
+        font-size: 0.5em;
+        line-height: 1;
+        vertical-align: middle;
+        background-color: #4d4d4d;
+        padding: 0.1em 0.4em 0.1em 0.2em;
+        border-radius: 0.2em;
+        width: fit-content;
+        margin-left: 0.5em;
+
+        span.codicon {
+          font-size: 0.8em;
+        }
       }
     }
 
@@ -107,7 +126,7 @@ const download = () => {
 
   .right {
     display: flex;
-    flex: 1 0 3.3rem;
+    flex: 1 0 4.4rem;
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-around;

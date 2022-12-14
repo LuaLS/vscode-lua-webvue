@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { getGitTree } from "@/services/github.service";
 import { ADDONS_DIRECTORY } from "@/config";
-import { Addon, type AddonConfig } from "@/services/addon.service";
+import { Addon } from "@/services/addon.service";
 
 type AddonState = {
   loading: boolean;
@@ -56,6 +56,7 @@ export const useAddonStore = defineStore("addons", {
             addon.getTree().then(() => {
               addon.calculateSize();
             }),
+            addon.getLatestHash(),
           ]).then(() => this.addons.push(addon));
         }
       } catch (e) {

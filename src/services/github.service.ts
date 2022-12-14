@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import type { TreeResponse } from "@/types/github";
+import type { CommitList, TreeResponse } from "@/types/github";
 import { useAuthStore } from "@/stores/auth";
 
 import { REPOSITORY_OWNER, REPOSITORY_NAME } from "@/config";
@@ -34,24 +34,24 @@ export async function getGitTree(SHA: string, recursive = false) {
   }
 }
 
-/** Get the date at which an item was last updated
+/** Get the latest commit at a path
  * @see https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#get-a-commit
  */
-export async function getUpdatedDate(path: string) {
+export async function getCommit(path: string) {
   const endpoint = new URL(
     `https://api.github.com/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/commits`
   );
 
   const params = endpoint.searchParams;
+  params.append("path", path);
   params.append("page", "1");
   params.append("per_page", "1");
-
-  if (path) params.append("path", path);
 
   const authStore = useAuthStore();
 
   try {
-    const response = await axios.get(endpoint.toString(), {
+    console.log(endpoint.toString());
+    const response = await axios.get<CommitList>(endpoint.toString(), {
       headers: {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${authStore.access_token}`,
@@ -59,10 +59,11 @@ export async function getUpdatedDate(path: string) {
     });
     console.log(response);
     console.error(`Retrieved commit ${response.data[0].sha}`);
-    return response.data;
+    return response.data[0];
   } catch (e: any) {
-    console.error(e.response);
+    console.error(e.response ?? e.message);
     console.error(`Failed to get commit at path "${path}"`);
+    return false;
   }
 }
 
