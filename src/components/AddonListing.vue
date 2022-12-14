@@ -97,7 +97,7 @@ const download = () => {
     }
 
     .description {
-      --lh: 1.1em;
+      --lh: 1.2em;
       --lines: 2;
       padding: 0.1em;
       margin: 0px;
