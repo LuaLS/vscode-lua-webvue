@@ -46,7 +46,9 @@ export class Addon {
 
     try {
       const configFileRawURL = `${ADDONS_DIRECTORY}/${this.name}/${configFileNode.path}`;
-      const response = (await downloadFile(configFileRawURL)) as AddonConfig;
+      const response = await downloadFile<AddonConfig>(configFileRawURL);
+      if (!response) return;
+
       this.config = response;
       this.description = response.description;
     } catch (e) {

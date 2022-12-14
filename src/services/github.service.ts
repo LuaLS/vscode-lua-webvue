@@ -67,18 +67,20 @@ export async function getUpdatedDate(path: string) {
 }
 
 /** Download the raw contents of a file from GitHub */
-export async function downloadFile(path: string) {
+export async function downloadFile<T>(path: string) {
   const endpoint = new URL(
     `https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/main/${path}`
   );
 
   try {
-    const response = await axios.get<string | Object>(endpoint.toString());
+    const response = await axios.get<T>(endpoint.toString());
     console.log(response);
     console.log(`Downloaded file ${path}`);
+    if (!response.data) throw new Error("Response contains no data!");
     return response.data;
   } catch (e: any) {
     console.error(e.response);
     console.error(`Failed to download file "${path}" (${e})`);
+    return false;
   }
 }
