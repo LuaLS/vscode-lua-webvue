@@ -50,13 +50,14 @@ const download = () => {
 
   // Get just the data that is important
   const data = tree.map((node) => {
-    return { path: node.path, type: node.path };
+    return { path: node.path, type: node.type };
   });
 
   // Send command to VS Code to download the included tree
   vscode.postMessage(
     JSON.stringify({
       command: "download",
+      name: props.addon.name,
       tree: data,
     })
   );

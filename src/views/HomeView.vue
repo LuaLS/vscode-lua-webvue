@@ -26,7 +26,6 @@
         <h1>None Installed</h1>
       </vscode-panel-view>
     </vscode-panels>
-    <button @click="send">Send Message</button>
   </main>
 </template>
 
@@ -58,10 +57,6 @@ const refreshAddons = () => {
   addonStore.getList();
 };
 
-const send = () => {
-  vscode.postMessage({ command: "Hello World!" });
-};
-
 watch(
   () => authStore.access_token,
   () => {
@@ -79,6 +74,7 @@ watch(
   .controls {
     display: flex;
     justify-content: flex-end;
+    padding: 0px 0.3rem;
 
     .refresh span {
       vertical-align: middle;
@@ -95,7 +91,7 @@ watch(
   .addons {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 0.4em;
   }
 }
 </style>
