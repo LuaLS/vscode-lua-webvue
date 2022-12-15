@@ -16,7 +16,7 @@
       </p>
     </div>
     <div class="right">
-      <button class="uninstall">
+      <button class="uninstall" @click="addon.uninstall">
         <CodeIcon icon="trash" />
       </button>
       <div>{{ size }}</div>

@@ -147,4 +147,14 @@ export class LocalAddon extends Addon {
     this.size = addon.size;
     this.latestHash = addon.latestHash;
   }
+
+  /** Ask VS Code to uninstall this addon */
+  public uninstall() {
+    vscode.postMessage(
+      JSON.stringify({
+        command: "uninstall",
+        name: this.name,
+      })
+    );
+  }
 }
