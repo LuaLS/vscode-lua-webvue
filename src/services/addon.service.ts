@@ -122,11 +122,13 @@ export class RemoteAddon extends Addon {
       return { path: node.path, type: node.type };
     });
 
-    vscode.postMessage({
-      command: "download",
-      name: this.name,
-      tree,
-    });
+    vscode.postMessage(
+      JSON.stringify({
+        command: "download",
+        name: this.name,
+        tree,
+      })
+    );
   }
 }
 
