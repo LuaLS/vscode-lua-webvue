@@ -1,4 +1,5 @@
 import axios from "axios";
+import { vscode } from "@/services/vscode.service";
 import { ADDONS_DIRECTORY } from "@/config";
 
 import type { TreeNode, TreeResponse } from "@/types/github";
@@ -11,25 +12,42 @@ export type AddonConfig = {
 };
 
 export class Addon {
-  /** The path of the addon in the remote repository */
-  readonly path: string;
-  readonly url: string;
+  /** Name of the addon */
   public name: string;
+
+  /** A description of the addon */
   public description?: string;
-  public tree?: TreeNode[];
-  public treeTruncated?: boolean;
-  public config?: AddonConfig;
+
   /** Size of the addon in bytes */
   public size?: number;
+
+  /** Config of the addon */
+  public config?: AddonConfig;
+
+  /** The addon file tree */
+  public tree?: TreeNode[];
+
+  /** Whether the tree was too large and was truncated */
+  public treeTruncated?: boolean;
+
+  /** Latest git commit hash */
   public latestHash?: string;
 
-  constructor(path: string, url: string) {
-    this.path = path;
-    this.name = path.split("/").slice(-1)[0];
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+export class RemoteAddon extends Addon {
+  /** Github API url for the addon */
+  readonly url: string;
+
+  constructor(name: string, url: string) {
+    super(name);
     this.url = url;
   }
 
-  async fetchConfigFile() {
+  async getConfig() {
     let configFileNode: TreeNode;
 
     try {
@@ -82,7 +100,7 @@ export class Addon {
 
   /** Get the latest commit hash for this addon */
   async getLatestHash() {
-    const commit = await getCommit(`${ADDONS_DIRECTORY}/${this.path}`);
+    const commit = await getCommit(`${ADDONS_DIRECTORY}/${this.name}`);
 
     if (!commit) {
       console.error("Could not get latest hash!");
@@ -90,5 +108,41 @@ export class Addon {
     }
 
     this.latestHash = commit.sha;
+  }
+
+  /** Send message to VS Code to download this addon */
+  download() {
+    if (!this.tree)
+      throw new Error(
+        `Cannot download ${this.name}, tree has not be retrieved!`
+      );
+
+    // Get just the data that is needed from the tree
+    const tree = this.tree.map((node) => {
+      return { path: node.path, type: node.type };
+    });
+
+    vscode.postMessage({
+      command: "download",
+      name: this.name,
+      tree,
+    });
+  }
+}
+
+// TODO: put this somewhere logical
+type LocalAddonAsReceived = {
+  name: string;
+  description: string;
+  size: number;
+  latestHash?: string;
+};
+
+export class LocalAddon extends Addon {
+  constructor(addon: LocalAddonAsReceived) {
+    super(addon.name);
+    this.description = addon.description;
+    this.size = addon.size;
+    this.latestHash = addon.latestHash;
   }
 }

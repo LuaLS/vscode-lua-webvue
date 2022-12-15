@@ -4,94 +4,30 @@
       <vscode-panel-tab>BROWSE</vscode-panel-tab>
       <vscode-panel-tab>INSTALLED</vscode-panel-tab>
       <vscode-panel-view id="browse">
-        <div>
-          <div class="controls">
-            <button class="refresh" aria-label="Refresh Addon List">
-              <CodeIcon icon="refresh" @click="refreshAddons" />
-            </button>
-          </div>
-          <div v-if="addonStore.loading" class="loading">
-            <vscode-progress-ring />
-          </div>
-          <div class="addons" v-else>
-            <AddonListing
-              v-for="(addon, index) in addonStore.addons"
-              :key="index"
-              :addon="addon"
-            />
-          </div>
-        </div>
+        <BrowseAddons />
       </vscode-panel-view>
       <vscode-panel-view id="installed">
-        <h1>None Installed</h1>
+        <InstalledAddons />
       </vscode-panel-view>
     </vscode-panels>
   </main>
 </template>
 
 <script setup lang="ts">
-import { vscode } from "@/services/vscode.service";
-import { watch } from "vue";
-import { useAuthStore } from "@/stores/auth";
-import { useAddonStore } from "@/stores/addons";
-import AddonListing from "@/components/AddonListing.vue";
+import BrowseAddons from "./RemoteAddons.vue";
+import InstalledAddons from "./InstalledAddons.vue";
+
 import {
   provideVSCodeDesignSystem,
   vsCodePanels,
   vsCodePanelTab,
   vsCodePanelView,
-  vsCodeProgressRing,
 } from "@vscode/webview-ui-toolkit";
-import CodeIcon from "@/components/CodeIcon.vue";
 provideVSCodeDesignSystem().register(
   vsCodePanels(),
   vsCodePanelTab(),
-  vsCodePanelView(),
-  vsCodeProgressRing()
-);
-
-const authStore = useAuthStore();
-const addonStore = useAddonStore();
-
-const refreshAddons = () => {
-  addonStore.getList();
-};
-
-watch(
-  () => authStore.access_token,
-  () => {
-    addonStore.getList();
-  }
+  vsCodePanelView()
 );
 </script>
 
-<style lang="scss">
-#browse {
-  & > div {
-    width: 100%;
-  }
-
-  .controls {
-    display: flex;
-    justify-content: flex-end;
-    padding: 0px 0.3rem;
-
-    .refresh span {
-      vertical-align: middle;
-    }
-  }
-
-  .loading {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .addons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4em;
-  }
-}
-</style>
+<style lang="scss"></style>

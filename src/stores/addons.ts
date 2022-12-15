@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { getGitTree } from "@/services/github.service";
 import { ADDONS_DIRECTORY } from "@/config";
-import { Addon } from "@/services/addon.service";
+import { RemoteAddon } from "@/services/addon.service";
 
 type AddonState = {
   loading: boolean;
-  addons: Addon[];
+  addons: RemoteAddon[];
   addonsTruncated: boolean;
   error: string | null;
 };
@@ -49,10 +49,10 @@ export const useAddonStore = defineStore("addons", {
         }
 
         for (const node of tree.tree) {
-          const addon = new Addon(node.path, node.url);
+          const addon = new RemoteAddon(node.path, node.url);
 
           Promise.all([
-            addon.fetchConfigFile(),
+            addon.getConfig(),
             addon.getTree().then(() => {
               addon.calculateSize();
             }),

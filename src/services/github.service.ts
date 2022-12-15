@@ -58,7 +58,7 @@ export async function getCommit(path: string) {
       },
     });
     console.log(response);
-    console.error(`Retrieved commit ${response.data[0].sha}`);
+    console.log(`Retrieved commit ${response.data[0].sha}`);
     return response.data[0];
   } catch (e: any) {
     console.error(e.response ?? e.message);

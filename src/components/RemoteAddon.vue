@@ -3,7 +3,7 @@
     <div class="left">
       <h2>
         <a
-          :href="`https://github.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/tree/main/${ADDONS_DIRECTORY}/${addon.path}`"
+          :href="`https://github.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/tree/main/${ADDONS_DIRECTORY}/${addon.name}`"
           target="_blank"
           ref="nofollow noreferrer noopener external"
         >
@@ -28,12 +28,11 @@
 import { computed } from "vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 import { ADDONS_DIRECTORY, REPOSITORY_NAME, REPOSITORY_OWNER } from "@/config";
-import { vscode } from "@/services/vscode.service";
 import { formatBytes } from "@/services/format.service";
 
-import type { Addon } from "@/services/addon.service";
+import type { RemoteAddon } from "@/services/addon.service";
 
-const props = defineProps<{ addon: Addon }>();
+const props = defineProps<{ addon: RemoteAddon }>();
 
 const description = computed(
   () => props.addon.description ?? "Description could not be loaded"
@@ -45,28 +44,11 @@ const hash = computed(() => props.addon.latestHash?.slice(0, 7));
 
 /** Request that VS Code download an addon */
 const download = () => {
-  const tree = props.addon.tree;
-
-  if (!tree)
-    throw Error(`Tree does not exist for "${props.addon.name}" addon!`);
-
-  // Get just the data that is important
-  const data = tree.map((node) => {
-    return { path: node.path, type: node.type };
-  });
-
-  // Send command to VS Code to download the included tree
-  vscode.postMessage(
-    JSON.stringify({
-      command: "download",
-      name: props.addon.name,
-      tree: data,
-    })
-  );
+  props.addon.download();
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .addon {
   display: flex;
   justify-content: space-between;
