@@ -15,6 +15,9 @@ export class Addon {
   /** Name of the addon */
   public name: string;
 
+  /** If there is data loading for this addon */
+  public loading?: boolean;
+
   /** A description of the addon */
   public description?: string;
 
@@ -31,7 +34,7 @@ export class Addon {
   public treeTruncated?: boolean;
 
   /** Latest git commit hash */
-  public latestHash?: string;
+  public hash?: string;
 
   constructor(name: string) {
     this.name = name;
@@ -45,6 +48,7 @@ export class RemoteAddon extends Addon {
   constructor(name: string, url: string) {
     super(name);
     this.url = url;
+    this.loading = true;
   }
 
   async getConfig() {
@@ -107,7 +111,7 @@ export class RemoteAddon extends Addon {
       return;
     }
 
-    this.latestHash = commit.sha;
+    this.hash = commit.sha;
   }
 
   /** Send message to VS Code to download this addon */
@@ -115,6 +119,11 @@ export class RemoteAddon extends Addon {
     if (!this.tree)
       throw new Error(
         `Cannot download ${this.name}, tree has not be retrieved!`
+      );
+
+    if (!this.hash)
+      throw new Error(
+        `Cannot download ${this.name} as the latest commit has not been retrieved`
       );
 
     // Get just the data that is needed from the tree
@@ -127,6 +136,7 @@ export class RemoteAddon extends Addon {
         command: "download",
         name: this.name,
         tree,
+        hash: this.hash,
       })
     );
   }
@@ -137,7 +147,7 @@ type LocalAddonAsReceived = {
   name: string;
   description: string;
   size: number;
-  latestHash?: string;
+  hash?: string;
 };
 
 export class LocalAddon extends Addon {
@@ -145,7 +155,7 @@ export class LocalAddon extends Addon {
     super(addon.name);
     this.description = addon.description;
     this.size = addon.size;
-    this.latestHash = addon.latestHash;
+    this.hash = addon.hash;
   }
 
   /** Ask VS Code to uninstall this addon */

@@ -5,7 +5,7 @@ type Addon = {
   name: string;
   description: string;
   size: number;
-  latestHash: string;
+  hash: string;
 };
 
 export default (data: { addons: Addon[]; totalSize: number }) => {

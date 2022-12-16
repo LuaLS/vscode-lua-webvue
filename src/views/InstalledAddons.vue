@@ -1,18 +1,18 @@
 <template>
   <div id="local">
     <div class="controls">
-      <button class="refresh" @click="addonStore.getList">
+      <button class="refresh" :disabled="addonStore.loading" @click="refresh">
         <CodeIcon icon="refresh" />
       </button>
     </div>
     <vscode-progress-ring v-if="addonStore.loading" />
     <div v-else>
-      <div v-if="addonStore.addons.length === 0">
+      <div v-if="addons.length === 0">
         <h2>None Installed</h2>
       </div>
       <div v-else class="addons">
         <LocalAddon
-          v-for="(addon, index) of addonStore.addons"
+          v-for="(addon, index) of addons"
           :key="index"
           :addon="addon"
         />
@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { useInstalledAddonStore } from "@/stores/installedAddons";
 import LocalAddon from "@/components/LocalAddon.vue";
 import CodeIcon from "@/components/CodeIcon.vue";
@@ -34,13 +35,20 @@ import {
 provideVSCodeDesignSystem().register(vsCodeProgressRing());
 
 const addonStore = useInstalledAddonStore();
+
+const addons = computed(() => addonStore.sortedByName);
+
+const refresh = () => {
+  if (addonStore.loading) return;
+  addonStore.getList();
+};
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #local {
   width: 100%;
 
-  .controls {
+  > .controls {
     display: flex;
     justify-content: flex-end;
     padding: 0px 0.3rem;
@@ -50,7 +58,7 @@ const addonStore = useInstalledAddonStore();
     }
   }
 
-  vscode-progress-ring {
+  > vscode-progress-ring {
     transform: translateX(-50%);
     position: relative;
     left: 50%;

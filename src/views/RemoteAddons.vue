@@ -1,14 +1,14 @@
 <template>
   <div id="browser">
     <div class="controls">
-      <button class="refresh" @click="addonStore.getList">
+      <button class="refresh" :disabled="addonStore.loading" @click="refresh">
         <CodeIcon icon="refresh" />
       </button>
     </div>
     <vscode-progress-ring v-if="addonStore.loading" />
     <div v-else class="addons">
       <RemoteAddon
-        v-for="(addon, index) of addonStore.addons"
+        v-for="(addon, index) of addons"
         :key="index"
         :addon="addon"
       />
@@ -16,7 +16,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { watch, onMounted } from "vue";
+import { watch, onMounted, computed } from "vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 import RemoteAddon from "@/components/RemoteAddon.vue";
 import { useAddonStore } from "@/stores/addons";
@@ -31,6 +31,13 @@ provideVSCodeDesignSystem().register(vsCodeProgressRing());
 
 const authStore = useAuthStore();
 const addonStore = useAddonStore();
+
+const addons = computed(() => addonStore.sortedByName);
+
+const refresh = () => {
+  if (addonStore.loading) return;
+  addonStore.getList();
+};
 
 onMounted(() => {
   const clearWatch = watch(
@@ -57,7 +64,7 @@ onMounted(() => {
     }
   }
 
-  vscode-progress-ring {
+  > vscode-progress-ring {
     transform: translateX(-50%);
     position: relative;
     left: 50%;

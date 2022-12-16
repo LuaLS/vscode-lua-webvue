@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 
-type authStore = {
+export type AuthStore = {
   access_token: string | null;
 };
 
 export const useAuthStore = defineStore("auth", {
-  state: (): authStore => {
+  state: (): AuthStore => {
     return {
       access_token: null,
     };

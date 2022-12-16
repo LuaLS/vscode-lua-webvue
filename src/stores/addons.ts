@@ -3,7 +3,7 @@ import { getGitTree } from "@/services/github.service";
 import { ADDONS_DIRECTORY } from "@/config";
 import { RemoteAddon } from "@/services/addon.service";
 
-type AddonState = {
+export type AddonStore = {
   loading: boolean;
   addons: RemoteAddon[];
   addonsTruncated: boolean;
@@ -11,12 +11,17 @@ type AddonState = {
 };
 
 export const useAddonStore = defineStore("addons", {
-  state: (): AddonState => ({
+  state: (): AddonStore => ({
     loading: true,
     addons: [],
     addonsTruncated: false,
     error: null,
   }),
+  getters: {
+    sortedByName(state): RemoteAddon[] {
+      return [...state.addons].sort((a, b) => a.name.localeCompare(b.name));
+    },
+  },
   actions: {
     async getList() {
       this.loading = true;
@@ -65,6 +70,9 @@ export const useAddonStore = defineStore("addons", {
       }
 
       this.loading = false;
+    },
+    getAddon(name: string): RemoteAddon | undefined {
+      return this.addons.find((addon) => addon.name === name);
     },
   },
 });

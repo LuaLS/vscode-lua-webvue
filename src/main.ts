@@ -49,25 +49,43 @@ window.addEventListener("message", (event: MessageEvent) => {
 // https://code.visualstudio.com/api/extension-guides/webview#persistence
 import { useAddonStore } from "./stores/addons";
 import { useAuthStore } from "./stores/auth";
+import { useInstalledAddonStore } from "./stores/installedAddons";
+
+import type { AuthStore } from "@/stores/auth";
+import type { AddonStore } from "@/stores/addons";
+import type { InstalledAddonStore } from "@/stores/installedAddons";
+
+type State = {
+  authStore: AuthStore;
+  addonStore: AddonStore;
+  installedAddonStore: InstalledAddonStore;
+};
 
 if (!import.meta.env.DEV) {
   const addonStore = useAddonStore();
   const authStore = useAuthStore();
+  const installedAddonStore = useInstalledAddonStore();
 
-  const previousState = vscode.getState() as any;
+  // WARN: things may have to be properly deserialized here
+  const previousState = vscode.getState() as State;
   if (previousState) {
     authStore.$patch(previousState.authStore);
     addonStore.$patch(previousState.addonStore);
+    installedAddonStore.$patch(previousState.installedAddonStore);
   }
 
   const saveState = () => {
-    vscode.setState({
+    const state: State = {
       authStore: authStore.$state,
       addonStore: addonStore.$state,
-    });
+      installedAddonStore: installedAddonStore.$state,
+    };
+
+    vscode.setState(state);
   };
 
   // Save state on update to stores
   authStore.$subscribe(() => saveState());
   addonStore.$subscribe(() => saveState());
+  installedAddonStore.$subscribe(() => saveState());
 }
