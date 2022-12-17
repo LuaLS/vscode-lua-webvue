@@ -1,7 +1,7 @@
 <template>
   <Addon :addon="props.addon">
     <template #badges>
-      <span class="badge date" v-if="commitDate"
+      <span class="badge" v-if="commitDate"
         ><CodeIcon icon="cloud-download" />{{ commitDate }}</span
       >
       <span v-if="updateAvailable" class="badge">

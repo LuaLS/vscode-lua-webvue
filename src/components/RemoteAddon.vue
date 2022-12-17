@@ -1,15 +1,13 @@
 <template>
   <Addon :addon="props.addon">
     <template #badges>
-      <span class="badge date" v-if="commitDate">Updated {{ commitDate }}</span>
+      <span class="badge" v-if="commitDate">Updated {{ commitDate }}</span>
     </template>
     <template #controls>
-      <vscode-button
-        v-if="localAddon === undefined"
-        @click="props.addon.download"
+      <vscode-button v-if="localAddon" disabled>Installed</vscode-button>
+      <vscode-button v-else @click="props.addon.download"
         >Install</vscode-button
       >
-      <vscode-button v-if="localAddon" disabled>Installed</vscode-button>
     </template>
   </Addon>
 </template>
