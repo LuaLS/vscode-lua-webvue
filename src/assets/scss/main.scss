@@ -13,7 +13,6 @@ body {
 
   // Set background to darker color when not in VS Code
   &:not([data-vscode-theme-kind]) {
-    background-color: #1e2025;
     color: white;
     font-family: var(--font-family);
   }
@@ -36,8 +35,23 @@ body {
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: var(--lh);
-  max-height: calc(var(--lines) * var(--lh) * 1.1);
+  max-height: calc(var(--lines) * var(--lh));
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: var(--lines);
+}
+
+span.badge {
+  font-size: 0.8em;
+  line-height: 1;
+  vertical-align: middle;
+  background-color: #4d4d4d;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  width: fit-content;
+}
+
+button[disabled]:hover {
+  background: none;
+  cursor: not-allowed;
 }

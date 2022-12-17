@@ -3,12 +3,7 @@
     <div>
       <div class="top">
         <h1>
-          <a
-            :href="url"
-            target="_blank"
-            ref="nofollow noreferrer noopener external"
-            >{{ addon.name }}<CodeIcon icon="link-external"
-          /></a>
+          {{ addon.name }}
         </h1>
         <span class="badges">
           <span class="badge hash"
@@ -20,18 +15,26 @@
       <p class="description truncate">
         {{ description }}
       </p>
-      <div class="controls">
-        <slot name="controls" />
+      <div class="bottom">
+        {{ size }}
       </div>
     </div>
     <div class="right">
       <div class="top">
         <div class="quick-actions">
+          <a
+            :href="url"
+            target="_blank"
+            ref="nofollow noreferrer noopener external"
+            title="View on Github"
+            class="github-link"
+            ><CodeIcon icon="github"
+          /></a>
           <slot name="quick-actions" />
         </div>
       </div>
-      <div class="bottom">
-        {{ size }}
+      <div class="controls">
+        <slot name="controls" />
       </div>
     </div>
   </div>
@@ -75,8 +78,8 @@ const size = computed(() =>
 
     h1 {
       font-size: 2rem;
-      margin: 0;
-      margin-right: 0.2rem;
+      line-height: 1;
+      margin: 0px 0.2rem 0.2rem 0px;
       width: fit-content;
       display: inline-block;
 
@@ -86,12 +89,6 @@ const size = computed(() =>
         padding: 0.1em;
         color: inherit;
         text-decoration: none;
-
-        span.codicon.codicon-link-external {
-          font-size: 0.3em;
-          vertical-align: top;
-          margin: 0.2em 0px 0px 0.2em;
-        }
 
         &:hover {
           background: rgba(90, 93, 94, 0.31);
@@ -103,21 +100,22 @@ const size = computed(() =>
       display: inline-flex;
       justify-content: space-around;
       gap: 0.3rem;
+      margin-left: 0.3rem;
+      font-size: 1.2em;
 
       span.badge > span.codicon[class*="codicon-"] {
-        font-size: 1.2em;
-        margin-right: 0.2rem;
+        font-size: 1em;
+        margin-right: 0.1rem;
         vertical-align: middle;
-        padding: 0.2rem 0px;
       }
     }
   }
 
   p.description {
-    --lh: 1.2em;
+    --lh: 1.3em;
     --lines: 2;
-    padding: 0.1em;
     margin: 0px;
+    margin-bottom: 0.4rem;
   }
 
   .controls {
@@ -132,6 +130,16 @@ const size = computed(() =>
     justify-content: space-between;
 
     .quick-actions {
+      margin-right: 0.5em;
+
+      a.github-link {
+        color: inherit;
+        text-decoration: none;
+
+        &:not(:only-child) {
+          margin-right: 0.5em;
+        }
+      }
       span.codicon[class*="codicon-"] {
         font-size: 1.3em;
         vertical-align: middle;

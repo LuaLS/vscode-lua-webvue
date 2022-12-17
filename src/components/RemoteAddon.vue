@@ -1,14 +1,12 @@
 <template>
   <Addon :addon="props.addon">
-    <template #badges>
-      <span v-if="localAddon" class="badge">
-        <CodeIcon icon="pass" />Installed
-      </span>
-    </template>
-    <template #quick-actions>
-      <button class="download" @click="addon.download">
-        <CodeIcon icon="cloud-download" />
-      </button>
+    <template #controls>
+      <vscode-button
+        v-if="localAddon === undefined"
+        @click="props.addon.download"
+        >Install</vscode-button
+      >
+      <vscode-button v-if="localAddon" disabled>Installed</vscode-button>
     </template>
   </Addon>
 </template>
@@ -21,6 +19,13 @@ import CodeIcon from "@/components/CodeIcon.vue";
 
 import { computed } from "vue";
 import { useInstalledAddonStore } from "@/stores/installedAddons";
+
+import {
+  provideVSCodeDesignSystem,
+  vsCodeButton,
+} from "@vscode/webview-ui-toolkit";
+
+provideVSCodeDesignSystem().register(vsCodeButton());
 
 const props = defineProps<{ addon: RemoteAddon }>();
 
