@@ -1,49 +1,46 @@
-import axios from "axios";
+import type { TreeNode } from "@/types/github";
+import type { AddonConfig, LocalAddonFromVSCode } from "@/types/addon";
+
 import { vscode } from "@/services/vscode.service";
 import { ADDONS_DIRECTORY } from "@/config";
-
-import type { TreeNode, TreeResponse } from "@/types/github";
 import { downloadFile, getGitTree, getCommit } from "./github.service";
+import dayjs from "dayjs";
 
-export type AddonConfig = {
-  name: string;
-  description: string;
-  settings: { [index: string]: Object };
-};
-
+/** General structure of an Addon */
 export class Addon {
   /** Name of the addon */
-  public name: string;
+  name: string;
 
   /** If there is data loading for this addon */
-  public loading?: boolean;
+  loading?: boolean;
 
   /** A description of the addon */
-  public description?: string;
+  description?: string;
 
   /** Size of the addon in bytes */
-  public size?: number;
+  size?: number;
 
   /** Config of the addon */
-  public config?: AddonConfig;
+  config?: AddonConfig;
 
   /** The addon file tree */
-  public tree?: TreeNode[];
+  tree?: TreeNode[];
 
   /** Whether the tree was too large and was truncated */
-  public treeTruncated?: boolean;
-
-  /** Latest git commit hash */
-  public hash?: string;
+  treeTruncated?: boolean;
 
   constructor(name: string) {
     this.name = name;
   }
 }
 
+/** An addon that lives in the GitHub repo */
 export class RemoteAddon extends Addon {
   /** Github API url for the addon */
   readonly url: string;
+
+  /** ISO timestamp of when the addon was last committed to */
+  commitDate?: dayjs.Dayjs;
 
   constructor(name: string, url: string) {
     super(name);
@@ -51,79 +48,53 @@ export class RemoteAddon extends Addon {
     this.loading = true;
   }
 
-  async getConfig() {
-    let configFileNode: TreeNode;
-
+  /** Get the configuration file for this addon from GitHub */
+  public async getConfig(): Promise<void> {
     try {
-      const response = await axios.get<TreeResponse>(this.url);
-      const node = response.data.tree.find(
-        (node) => node.path === "config.json"
-      );
-      if (!node) {
-        throw new Error(`Could not find config file for "${this.name}" addon`);
-      }
-      configFileNode = node;
+      const configFilePath = `${ADDONS_DIRECTORY}/${this.name}/config.json`;
+      const config = await downloadFile<AddonConfig>(configFilePath);
+      this.config = config;
+      this.description = config.description;
     } catch (e) {
-      throw new Error(`Could not get Git tree for "${this.name}" addon`);
-    }
-
-    try {
-      const configFileRawURL = `${ADDONS_DIRECTORY}/${this.name}/${configFileNode.path}`;
-      const response = await downloadFile<AddonConfig>(configFileRawURL);
-      if (!response) return;
-
-      this.config = response;
-      this.description = response.description;
-    } catch (e) {
-      throw new Error(
-        `Could not download config file for "${this.name}" addon`
-      );
+      console.error(`Failed to get config file for "${this.name}" addon!`);
+      throw e;
     }
   }
 
-  /** Get the Git tree for this addon */
-  async getTree() {
+  /** Get the Git tree for this addon from GitHub */
+  public async getTree(): Promise<void> {
     try {
       const response = await getGitTree(this.url, true);
       this.tree = response.tree;
       this.treeTruncated = response.truncated;
+      this.size = this.tree.reduce((sum, node) => (sum += node.size ?? 0), 0);
     } catch (e) {
-      throw new Error(`Failed to get git tree for addon! (${e})`);
+      console.error(`Failed to get git tree for "${this.name}" addon! (${e})`);
+      throw e;
     }
   }
 
-  /** Calculate the size of an addon */
-  calculateSize() {
-    if (!this.tree)
-      throw new Error(
-        `Could not get size of addon, git tree has not been retrieved!`
-      );
-
-    this.size = this.tree.reduce((sum, node) => (sum += node.size ?? 0), 0);
-  }
-
-  /** Get the latest commit hash for this addon */
-  async getLatestHash() {
-    const commit = await getCommit(`${ADDONS_DIRECTORY}/${this.name}`);
-
-    if (!commit) {
-      console.error("Could not get latest hash!");
-      return;
+  /** Get the date that this addon was last modified from GitHub */
+  public async getModifiedDate(): Promise<void> {
+    try {
+      const commit = await getCommit(`${ADDONS_DIRECTORY}/${this.name}`);
+      this.commitDate = dayjs(commit.commit.committer.date);
+    } catch (e) {
+      console.error(`Failed to get modified date for "${this.name}" addon!`);
+      throw e;
     }
-
-    this.hash = commit.sha;
   }
 
   /** Send message to VS Code to download this addon */
-  download() {
+  public download() {
     if (!this.tree)
       throw new Error(
-        `Cannot download ${this.name}, tree has not be retrieved!`
+        `Cannot download "${this.name}", tree has not be retrieved!`
       );
 
-    if (!this.hash)
+    if (!this.commitDate)
       throw new Error(
-        `Cannot download ${this.name} as the latest commit has not been retrieved`
+        `Cannot download "${this.name}", commit date is undefined`
       );
 
     // Get just the data that is needed from the tree
@@ -136,26 +107,20 @@ export class RemoteAddon extends Addon {
         command: "download",
         name: this.name,
         tree,
-        hash: this.hash,
+        commitDate: dayjs().valueOf(),
       })
     );
   }
 }
 
-// TODO: put this somewhere logical
-type LocalAddonAsReceived = {
-  name: string;
-  description: string;
-  size: number;
-  hash?: string;
-};
-
 export class LocalAddon extends Addon {
-  constructor(addon: LocalAddonAsReceived) {
+  installDate: dayjs.Dayjs;
+
+  constructor(addon: LocalAddonFromVSCode) {
     super(addon.name);
     this.description = addon.description;
     this.size = addon.size;
-    this.hash = addon.hash;
+    this.installDate = dayjs(addon.installDate);
   }
 
   /** Ask VS Code to uninstall this addon */

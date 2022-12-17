@@ -1,5 +1,8 @@
 <template>
   <Addon :addon="props.addon">
+    <template #badges>
+      <span class="badge date" v-if="commitDate">Updated {{ commitDate }}</span>
+    </template>
     <template #controls>
       <vscode-button
         v-if="localAddon === undefined"
@@ -15,7 +18,6 @@
 import type { RemoteAddon } from "@/services/addon.service";
 
 import Addon from "./Addon.vue";
-import CodeIcon from "@/components/CodeIcon.vue";
 
 import { computed } from "vue";
 import { useInstalledAddonStore } from "@/stores/installedAddons";
@@ -33,4 +35,6 @@ const installedAddonStore = useInstalledAddonStore();
 const localAddon = computed(() =>
   installedAddonStore.getAddon(props.addon.name)
 );
+
+const commitDate = computed(() => props.addon.commitDate?.fromNow());
 </script>

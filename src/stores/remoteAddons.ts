@@ -10,7 +10,7 @@ export type AddonStore = {
   error: string | null;
 };
 
-export const useAddonStore = defineStore("addons", {
+export const useAddonStore = defineStore("remoteAddons", {
   state: (): AddonStore => ({
     loading: true,
     addons: [],
@@ -58,10 +58,8 @@ export const useAddonStore = defineStore("addons", {
 
           Promise.all([
             addon.getConfig(),
-            addon.getTree().then(() => {
-              addon.calculateSize();
-            }),
-            addon.getLatestHash(),
+            addon.getTree(),
+            addon.getModifiedDate(),
           ]).then(() => this.addons.push(addon));
         }
       } catch (e) {

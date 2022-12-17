@@ -19,7 +19,7 @@
 import { watch, onMounted, computed } from "vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 import RemoteAddon from "@/components/RemoteAddon.vue";
-import { useAddonStore } from "@/stores/addons";
+import { useAddonStore } from "@/stores/remoteAddons";
 import { useAuthStore } from "@/stores/auth";
 
 import {
@@ -73,7 +73,7 @@ onMounted(() => {
   .addons {
     display: flex;
     flex-direction: column;
-    gap: 0.4em;
+    gap: 0.5rem;
   }
 }
 </style>

@@ -39,12 +39,12 @@ window.addEventListener("message", (event: MessageEvent) => {
 
 // Save and restore state using Pinia and VS Code
 // https://code.visualstudio.com/api/extension-guides/webview#persistence
-import { useAddonStore } from "./stores/addons";
+import { useAddonStore } from "./stores/remoteAddons";
 import { useAuthStore } from "./stores/auth";
 import { useInstalledAddonStore } from "./stores/installedAddons";
 
 import type { AuthStore } from "@/stores/auth";
-import type { AddonStore } from "@/stores/addons";
+import type { AddonStore } from "@/stores/remoteAddons";
 import type { InstalledAddonStore } from "@/stores/installedAddons";
 
 type State = {

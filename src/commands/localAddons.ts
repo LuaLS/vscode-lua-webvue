@@ -1,14 +1,12 @@
+import type { LocalAddonFromVSCode } from "@/types/addon";
+
 import { LocalAddon } from "@/services/addon.service";
 import { useInstalledAddonStore } from "@/stores/installedAddons";
 
-type Addon = {
-  name: string;
-  description: string;
-  size: number;
-  hash: string;
-};
-
-export default (data: { addons: Addon[]; totalSize: number }) => {
+export default (data: {
+  addons: LocalAddonFromVSCode[];
+  totalSize: number;
+}) => {
   const addonStore = useInstalledAddonStore();
 
   addonStore.addons = data.addons.map((addon) => new LocalAddon(addon));

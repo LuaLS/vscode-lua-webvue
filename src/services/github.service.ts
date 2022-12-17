@@ -63,7 +63,7 @@ export async function getCommit(path: string) {
   } catch (e: any) {
     console.error(e.response ?? e.message);
     console.error(`Failed to get commit at path "${path}"`);
-    return false;
+    throw e;
   }
 }
 
@@ -82,6 +82,6 @@ export async function downloadFile<T>(path: string) {
   } catch (e: any) {
     console.error(e.response);
     console.error(`Failed to download file "${path}" (${e})`);
-    return false;
+    throw e;
   }
 }
