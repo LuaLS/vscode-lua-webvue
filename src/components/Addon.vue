@@ -43,7 +43,7 @@ import type { Addon } from "@/services/addon.service";
 import CodeIcon from "./CodeIcon.vue";
 
 import { REPOSITORY_OWNER, REPOSITORY_NAME, ADDONS_DIRECTORY } from "@/config";
-import { defineProps, computed } from "vue";
+import { computed } from "vue";
 import { formatBytes } from "@/services/format.service";
 
 const props = defineProps<{ addon: Addon }>();
