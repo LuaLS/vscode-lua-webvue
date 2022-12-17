@@ -32,7 +32,8 @@ class VSCodeAPIWrapper {
     if (this.vsCodeApi) {
       this.vsCodeApi.postMessage(message);
     } else {
-      console.log(message);
+      console.log(`Posting ${message} in development mode`);
+      window.parent.postMessage(message, "*");
     }
   }
 

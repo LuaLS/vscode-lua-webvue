@@ -19,14 +19,6 @@ app.mount("#app");
 import { commands } from "./commands";
 import { vscode } from "@/services/vscode.service";
 
-// If developing with vite, get token from .env
-if (import.meta.env.DEV) {
-  setTimeout(
-    () => commands.accessToken({ data: import.meta.env.VITE_TOKEN }),
-    1000
-  );
-}
-
 // Listen for messages from VS Code
 window.addEventListener("message", (event: MessageEvent) => {
   const data = event.data;
