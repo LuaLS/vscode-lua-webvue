@@ -9,6 +9,8 @@
       >
       <vscode-button
         v-if="!installedAddonStore.loading && !localAddon"
+        :aria-label="`Install ${name}`"
+        :title="`Install ${name}`"
         @click="props.addon.download"
         >Install</vscode-button
       >
@@ -38,5 +40,6 @@ const localAddon = computed(() =>
   installedAddonStore.getAddon(props.addon.name)
 );
 
+const name = computed(() => props.addon.name);
 const commitDate = computed(() => props.addon.commitDate?.fromNow());
 </script>

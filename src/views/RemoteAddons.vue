@@ -54,7 +54,7 @@ onMounted(() => {
 #browser {
   width: 100%;
 
-  .controls {
+  > .controls {
     display: flex;
     justify-content: flex-end;
     padding: 0px 0.3rem;
