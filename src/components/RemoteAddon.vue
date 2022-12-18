@@ -4,8 +4,12 @@
       <span class="badge" v-if="commitDate">Updated {{ commitDate }}</span>
     </template>
     <template #controls>
-      <vscode-button v-if="localAddon" disabled>Installed</vscode-button>
-      <vscode-button v-else @click="props.addon.download"
+      <vscode-button v-if="!installedAddonStore.loading && localAddon" disabled
+        >Installed</vscode-button
+      >
+      <vscode-button
+        v-if="!installedAddonStore.loading && !localAddon"
+        @click="props.addon.download"
         >Install</vscode-button
       >
     </template>
