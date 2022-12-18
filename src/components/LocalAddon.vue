@@ -16,6 +16,12 @@
         :title="`Update ${props.addon.name}`"
         >Update</vscode-button
       >
+      <vscode-button v-if="!enabled" @click="addon.enable" appearance="primary"
+        >Enable</vscode-button
+      >
+      <vscode-button v-else @click="addon.disable" appearance="primary"
+        >Disable</vscode-button
+      >
       <vscode-button @click="addon.uninstall" appearance="secondary"
         >Uninstall</vscode-button
       >
@@ -46,5 +52,6 @@ const updateAvailable = computed(() =>
   remoteAddon.value?.commitDate?.isAfter(props.addon.installDate)
 );
 
+const enabled = computed(() => props.addon.enabled);
 const commitDate = computed(() => props.addon.installDate?.fromNow());
 </script>

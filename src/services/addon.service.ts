@@ -114,10 +114,13 @@ export class RemoteAddon extends Addon {
 }
 
 export class LocalAddon extends Addon {
+  enabled: boolean;
+
   installDate: dayjs.Dayjs;
 
   constructor(addon: LocalAddonFromVSCode) {
     super(addon.name);
+    this.enabled = addon.enabled;
     this.description = addon.description;
     this.size = addon.size;
     this.installDate = dayjs(addon.installDate);
@@ -128,6 +131,24 @@ export class LocalAddon extends Addon {
     vscode.postMessage(
       JSON.stringify({
         command: "uninstall",
+        name: this.name,
+      })
+    );
+  }
+
+  public enable() {
+    vscode.postMessage(
+      JSON.stringify({
+        command: "enable",
+        name: this.name,
+      })
+    );
+  }
+
+  public disable() {
+    vscode.postMessage(
+      JSON.stringify({
+        command: "disable",
         name: this.name,
       })
     );
