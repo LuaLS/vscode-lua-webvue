@@ -39,31 +39,53 @@ window.addEventListener("message", (event: MessageEvent) => {
 
 // Save and restore state using Pinia and VS Code
 // https://code.visualstudio.com/api/extension-guides/webview#persistence
-import { useAddonStore } from "./stores/remoteAddons";
-import { useAuthStore } from "./stores/auth";
-import { useInstalledAddonStore } from "./stores/installedAddons";
-
-import type { AuthStore } from "@/stores/auth";
-import type { AddonStore } from "@/stores/remoteAddons";
-import type { InstalledAddonStore } from "@/stores/installedAddons";
+import { useAddonStore, type AddonStore } from "./stores/remoteAddons";
+import { useAuthStore, type AuthStore } from "./stores/auth";
+import {
+  useInstalledAddonStore,
+  type InstalledAddonStore,
+} from "./stores/installedAddons";
+import { useAppStore, type AppStore } from "./stores/app";
+import { LocalAddon, RemoteAddon } from "./services/addon.service";
 
 type State = {
   authStore: AuthStore;
   addonStore: AddonStore;
   installedAddonStore: InstalledAddonStore;
+  appStore: AppStore;
 };
 
 if (!import.meta.env.DEV) {
   const addonStore = useAddonStore();
   const authStore = useAuthStore();
   const installedAddonStore = useInstalledAddonStore();
+  const appStore = useAppStore();
 
   // WARN: things may have to be properly deserialized here
   const previousState = vscode.getState() as State;
+
+  console.log("PREVIOUS STATE");
+  console.log(previousState);
+
   if (previousState) {
-    authStore.$patch(previousState.authStore);
-    addonStore.$patch(previousState.addonStore);
-    installedAddonStore.$patch(previousState.installedAddonStore);
+    previousState.addonStore.addons.forEach((serializedAddon, index) => {
+      previousState.addonStore.addons[index] =
+        RemoteAddon.loadFromState(serializedAddon);
+    });
+
+    previousState.installedAddonStore.addons.forEach(
+      (serializedAddon, index) => {
+        previousState.installedAddonStore.addons[index] =
+          LocalAddon.loadFromState(serializedAddon);
+      }
+    );
+
+    console.log(previousState);
+
+    authStore.$state = previousState.authStore;
+    addonStore.$state = previousState.addonStore;
+    installedAddonStore.$state = previousState.installedAddonStore;
+    appStore.$state = previousState.appStore;
   }
 
   const saveState = () => {
@@ -71,6 +93,7 @@ if (!import.meta.env.DEV) {
       authStore: authStore.$state,
       addonStore: addonStore.$state,
       installedAddonStore: installedAddonStore.$state,
+      appStore: appStore.$state,
     };
 
     vscode.setState(state);
@@ -80,4 +103,5 @@ if (!import.meta.env.DEV) {
   authStore.$subscribe(() => saveState());
   addonStore.$subscribe(() => saveState());
   installedAddonStore.$subscribe(() => saveState());
+  appStore.$subscribe(() => saveState());
 }

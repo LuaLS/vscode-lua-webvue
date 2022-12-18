@@ -39,13 +39,27 @@ export class RemoteAddon extends Addon {
   /** Github API url for the addon */
   readonly url: string;
 
-  /** ISO timestamp of when the addon was last committed to */
+  /** ISO timestamp (milliseconds) of when the addon was last committed to */
   commitDate?: dayjs.Dayjs;
 
   constructor(name: string, url: string) {
     super(name);
     this.url = url;
     this.loading = true;
+  }
+
+  public static loadFromState(addon: RemoteAddon) {
+    const obj = new RemoteAddon(addon.name, addon.url);
+
+    // Add fields back in
+    for (const key in addon) {
+      //@ts-ignore
+      obj[key] = addon[key];
+    }
+
+    obj.commitDate = dayjs(addon.commitDate);
+
+    return obj;
   }
 
   /** Get the configuration file for this addon from GitHub */
@@ -118,12 +132,16 @@ export class LocalAddon extends Addon {
 
   installDate: dayjs.Dayjs;
 
-  constructor(addon: LocalAddonFromVSCode) {
+  constructor(addon: LocalAddonFromVSCode | LocalAddon) {
     super(addon.name);
     this.enabled = addon.enabled;
     this.description = addon.description;
     this.size = addon.size;
     this.installDate = dayjs(addon.installDate);
+  }
+
+  public static loadFromState(addon: LocalAddon) {
+    return new LocalAddon(addon);
   }
 
   /** Ask VS Code to uninstall this addon */

@@ -17,7 +17,7 @@
         >Update</vscode-button
       >
       <vscode-button
-        v-if="enabled"
+        v-if="!enabled"
         :disabled="!workspaceOpen"
         :aria-label="`Enable ${name}`"
         :title="
@@ -28,9 +28,12 @@
         >Enable</vscode-button
       >
       <vscode-button
-        v-if="workspaceOpen && !enabled"
+        v-if="enabled"
+        :disabled="!workspaceOpen"
         :aria-label="`Disable ${name}`"
-        :title="`Disable ${name}`"
+        :title="
+          !workspaceOpen ? 'There is no workspace open' : `Disable ${name}`
+        "
         @click="addon.disable"
         appearance="primary"
         >Disable</vscode-button
