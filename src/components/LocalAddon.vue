@@ -1,6 +1,7 @@
 <template>
   <Addon :addon="props.addon">
     <template #badges>
+      <span class="badge" v-if="hasPlugin">Plugin</span>
       <span class="badge" v-if="commitDate"
         ><CodeIcon icon="cloud-download" />{{ commitDate }}</span
       >
@@ -80,4 +81,5 @@ const workspaceOpen = computed(() => appStore.workspaceOpen);
 const name = computed(() => props.addon.name);
 const enabled = computed(() => props.addon.enabled);
 const commitDate = computed(() => props.addon.installDate?.fromNow());
+const hasPlugin = computed(() => props.addon.hasPlugin);
 </script>

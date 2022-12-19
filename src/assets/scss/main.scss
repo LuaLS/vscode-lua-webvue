@@ -28,6 +28,10 @@ body {
   }
 }
 
+.text-center {
+  text-align: center;
+}
+
 .truncate {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -55,6 +59,6 @@ button[disabled]:hover {
 
 @media screen and (min-width: 700px) {
   body {
-   --type-ramp-base-font-size: 16px;
+    --type-ramp-base-font-size: 16px;
   }
 }

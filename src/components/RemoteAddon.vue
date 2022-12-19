@@ -2,6 +2,7 @@
   <Addon :addon="props.addon">
     <template #badges>
       <span class="badge" v-if="commitDate">Updated {{ commitDate }}</span>
+      <span class="badge" v-if="hasPlugin">Plugin</span>
     </template>
     <template #controls>
       <vscode-button v-if="!installedAddonStore.loading && localAddon" disabled
@@ -22,6 +23,7 @@
 import type { RemoteAddon } from "@/services/addon.service";
 
 import Addon from "./Addon.vue";
+import { PLUGIN_FILENAME } from "@/config";
 
 import { computed } from "vue";
 import { useInstalledAddonStore } from "@/stores/installedAddons";
@@ -42,4 +44,7 @@ const localAddon = computed(() =>
 
 const name = computed(() => props.addon.name);
 const commitDate = computed(() => props.addon.commitDate?.fromNow());
+const hasPlugin = computed(() =>
+  props.addon.tree?.find((node) => node.path === PLUGIN_FILENAME)
+);
 </script>

@@ -8,7 +8,7 @@
     <vscode-progress-ring v-if="addonStore.loading" />
     <div v-else>
       <div v-if="addons.length === 0">
-        <h2>None Installed</h2>
+        <h2 class="text-center">None Installed</h2>
       </div>
       <div v-else class="addons">
         <LocalAddon

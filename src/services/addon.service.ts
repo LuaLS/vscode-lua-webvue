@@ -132,12 +132,15 @@ export class LocalAddon extends Addon {
 
   installDate: dayjs.Dayjs;
 
+  hasPlugin: boolean;
+
   constructor(addon: LocalAddonFromVSCode | LocalAddon) {
     super(addon.name);
     this.enabled = addon.enabled;
     this.description = addon.description;
     this.size = addon.size;
     this.installDate = dayjs(addon.installDate);
+    this.hasPlugin = addon.hasPlugin;
   }
 
   public static loadFromState(addon: LocalAddon) {

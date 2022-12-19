@@ -12,4 +12,5 @@ export type LocalAddonFromVSCode = {
   description: string | undefined;
   size: number;
   installDate: number | undefined;
+  hasPlugin: boolean;
 };
