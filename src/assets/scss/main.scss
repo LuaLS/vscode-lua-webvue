@@ -13,7 +13,8 @@ body {
     font-family: var(--font-family);
   }
 
-  button {
+  button,
+  .quick-actions a {
     background: none;
     border: none;
     border-radius: 5px;

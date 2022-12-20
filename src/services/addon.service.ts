@@ -174,4 +174,13 @@ export class LocalAddon extends Addon {
       })
     );
   }
+
+  public open() {
+    vscode.postMessage(
+      JSON.stringify({
+        command: "open",
+        name: this.name,
+      })
+    );
+  }
 }

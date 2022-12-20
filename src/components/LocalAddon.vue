@@ -9,6 +9,14 @@
         <CodeIcon icon="repo-pull" />Update Available
       </span>
     </template>
+    <template #quick-actions>
+      <button
+        @click="addon.open"
+        :title="`Open ${addon.name} in file explorer`"
+      >
+        <CodeIcon icon="folder" />
+      </button>
+    </template>
     <template #controls>
       <vscode-button
         v-if="updateAvailable"
