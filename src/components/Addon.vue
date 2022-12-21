@@ -23,8 +23,8 @@
           <a
             :href="url"
             target="_blank"
-            ref="nofollow noreferrer noopener external"
-            title="View on Github"
+            rel="nofollow noreferrer noopener external"
+            title="View on GitHub"
             class="github-link"
             ><CodeIcon icon="github"
           /></a>
