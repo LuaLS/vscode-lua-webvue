@@ -9,7 +9,9 @@ export default (data: {
 }) => {
   const addonStore = useInstalledAddonStore();
 
-  addonStore.addons = data.addons.map((addon) => new LocalAddon(addon));
-  addonStore.totalSize = data.totalSize;
-  addonStore.loading = false;
+  addonStore.$patch({
+    addons: data.addons.map((addon) => new LocalAddon(addon)),
+    totalSize: data.totalSize,
+    loading: false
+  });
 };
