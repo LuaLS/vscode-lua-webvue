@@ -11,6 +11,9 @@ export class Addon {
   /** Name of the addon */
   name: string;
 
+  /** Display name of the addon from `config.json` */
+  displayName?: string;
+
   /** If there is data loading for this addon */
   loading?: boolean;
 
@@ -69,6 +72,7 @@ export class RemoteAddon extends Addon {
       const config = await downloadFile<AddonConfig>(configFilePath);
       this.config = config;
       this.description = config.description;
+      this.displayName = config.name;
     } catch (e) {
       console.error(`Failed to get config file for "${this.name}" addon!`);
       throw e;
@@ -141,6 +145,7 @@ export class LocalAddon extends Addon {
     this.size = addon.size;
     this.installDate = dayjs(addon.installDate);
     this.hasPlugin = addon.hasPlugin;
+    this.displayName = addon.displayName;
   }
 
   public static loadFromState(addon: LocalAddon) {

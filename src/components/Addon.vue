@@ -3,7 +3,7 @@
     <div>
       <div class="top">
         <h1>
-          {{ addon.name }}
+          {{ addon.displayName ?? addon.name }}
         </h1>
         <span class="badges">
           <slot name="badges" />

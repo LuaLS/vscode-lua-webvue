@@ -8,6 +8,7 @@ export type AddonConfig = {
 /** A local addon as it is received in a message from VS Code */
 export type LocalAddonFromVSCode = {
   name: string;
+  displayName: string;
   enabled: boolean;
   description: string | undefined;
   size: number;
