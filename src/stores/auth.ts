@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 export type AuthStore = {
-  access_token: string | null;
+  access_token: string | boolean | null;
 };
 
 export const useAuthStore = defineStore("auth", {

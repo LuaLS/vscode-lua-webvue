@@ -19,12 +19,13 @@ export async function getGitTree(SHA: string, recursive = false) {
   const authStore = useAuthStore();
 
   try {
-    const response = await axios.get<TreeResponse>(url.toString(), {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${authStore.access_token}`,
-      },
-    });
+    const headers: { [index: string]: string } = {
+      Accept: "application/vnd.github+json",
+    };
+    if (authStore.access_token)
+      headers.Authorization = `Bearer ${authStore.access_token}`;
+
+    const response = await axios.get<TreeResponse>(url.toString(), headers);
     console.log(response);
     return response.data;
   } catch (e: any) {
@@ -50,13 +51,13 @@ export async function getCommit(path: string) {
   const authStore = useAuthStore();
 
   try {
-    console.log(endpoint.toString());
-    const response = await axios.get<CommitList>(endpoint.toString(), {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${authStore.access_token}`,
-      },
-    });
+    const headers: { [index: string]: string } = {
+      Accept: "application/vnd.github+json",
+    };
+    if (authStore.access_token)
+      headers.Authorization = `Bearer ${authStore.access_token}`;
+
+    const response = await axios.get<CommitList>(endpoint.toString(), headers);
     console.log(response);
     console.log(`Retrieved commit ${response.data[0].sha}`);
     return response.data[0];
