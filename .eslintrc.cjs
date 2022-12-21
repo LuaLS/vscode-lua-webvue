@@ -13,7 +13,13 @@ module.exports = {
     ecmaVersion: "latest",
   },
   rules: {
-    "linebreak-style": ["warn", "unix"],
-    "vue/multi-word-component-names": ["off"]
+    "linebreak-style": ["warn", "crlf"],
+    "vue/multi-word-component-names": ["off"],
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "crlf",
+      },
+    ],
   },
 };
