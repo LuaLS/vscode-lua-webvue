@@ -25,6 +25,7 @@ Receives the list of addons found in the VS Code global storage for the `vscode-
     addons: [
         {
             name: string,
+            displayName: string,
             enabled: boolean,
             description: string,
             size: number,
