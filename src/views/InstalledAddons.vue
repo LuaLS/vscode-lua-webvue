@@ -40,10 +40,12 @@ import {
   provideVSCodeDesignSystem,
   vsCodeProgressRing,
 } from "@vscode/webview-ui-toolkit";
+import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 provideVSCodeDesignSystem().register(vsCodeProgressRing());
 
 const addonStore = useLocalAddonsStore();
+const remoteAddonStore = useRemoteAddonStore();
 
 const addons = computed(() => addonStore.sortedByName);
 
@@ -53,7 +55,12 @@ const refresh = () => {
   addonStore.refresh();
 };
 
-onMounted(() => addonStore.getPage());
+const watcher = remoteAddonStore.$subscribe((m, state) => {
+  if (!state.loading) {
+    addonStore.getPage();
+    watcher();
+  }
+});
 </script>
 
 <style scoped lang="scss">
