@@ -5,13 +5,20 @@ export type AddonConfig = {
   settings: { [index: string]: Object };
 };
 
-/** A local addon as it is received in a message from VS Code */
-export type LocalAddonFromVSCode = {
+export interface Addon {
   name: string;
-  displayName: string;
-  enabled: boolean;
-  description: string | undefined;
-  size: number;
-  installDate: number | undefined;
-  hasPlugin: boolean;
-};
+  displayName?: string;
+  description?: string;
+  size?: number;
+  hasPlugin?: boolean;
+}
+
+export interface LocalAddon extends Addon {
+  enabled?: boolean;
+  hasUpdate?: boolean;
+  installTimestamp?: number;
+}
+
+export interface RemoteAddon extends Addon {
+  latestCommitTimestamp?: number;
+}

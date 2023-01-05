@@ -1,9 +1,9 @@
 <template>
   <Addon :addon="props.addon">
     <template #badges>
-      <span class="badge" v-if="hasPlugin">Plugin</span>
-      <span class="badge" v-if="commitDate"
-        ><CodeIcon icon="cloud-download" />{{ commitDate }}</span
+      <span class="badge" v-if="props.addon.hasPlugin">Plugin</span>
+      <span class="badge" v-if="installDateFromNow" :title="installDate"
+        ><CodeIcon icon="cloud-download" />{{ installDateFromNow }}</span
       >
       <span v-if="updateAvailable" class="badge">
         <CodeIcon icon="repo-pull" />Update Available
@@ -11,8 +11,8 @@
     </template>
     <template #quick-actions>
       <button
-        @click="addon.open"
-        :title="`Open ${addon.name} in file explorer`"
+        @click="open"
+        :title="`Open ${props.addon.name} in file explorer`"
       >
         <CodeIcon icon="folder" />
       </button>
@@ -20,37 +20,41 @@
     <template #controls>
       <vscode-button
         v-if="updateAvailable"
-        @click="remoteAddon?.download"
-        :aria-label="`Update ${name}`"
-        :title="`Update ${name}`"
+        @click="update"
+        :aria-label="`Update ${props.addon.name}`"
+        :title="`Update ${props.addon.name}`"
         >Update</vscode-button
       >
       <vscode-button
-        v-if="!enabled"
+        v-if="!props.addon.enabled"
         :disabled="!workspaceOpen"
-        :aria-label="`Enable ${name}`"
+        :aria-label="`Enable ${props.addon.name}`"
         :title="
-          !workspaceOpen ? 'There is no workspace open' : `Enable ${name}`
+          !workspaceOpen
+            ? 'There is no workspace open'
+            : `Enable ${props.addon.name}`
         "
-        @click="addon.enable"
+        @click="enable"
         appearance="primary"
         >Enable</vscode-button
       >
       <vscode-button
-        v-if="enabled"
+        v-if="props.addon.enabled"
         :disabled="!workspaceOpen"
-        :aria-label="`Disable ${name}`"
+        :aria-label="`Disable ${props.addon.name}`"
         :title="
-          !workspaceOpen ? 'There is no workspace open' : `Disable ${name}`
+          !workspaceOpen
+            ? 'There is no workspace open'
+            : `Disable ${props.addon.name}`
         "
-        @click="addon.disable"
+        @click="disable"
         appearance="primary"
         >Disable</vscode-button
       >
       <vscode-button
-        :aria-label="`Uninstall ${name}`"
-        :title="`Uninstall ${name}`"
-        @click="addon.uninstall"
+        :aria-label="`Uninstall ${props.addon.name}`"
+        :title="`Uninstall ${props.addon.name}`"
+        @click="uninstall"
         appearance="secondary"
         >Uninstall</vscode-button
       >
@@ -59,35 +63,62 @@
 </template>
 
 <script setup lang="ts">
-import type { LocalAddon } from "@/services/addon.service";
+import type { LocalAddon } from "@/types/addon";
 
 import { computed } from "vue";
+import dayjs from "dayjs";
 import CodeIcon from "@/components/CodeIcon.vue";
 import Addon from "./Addon.vue";
-import { useAddonStore } from "@/stores/remoteAddons";
 import {
   provideVSCodeDesignSystem,
   vsCodeButton,
 } from "@vscode/webview-ui-toolkit";
 import { useAppStore } from "@/stores/app";
+import { vscode } from "@/services/vscode.service";
 
 provideVSCodeDesignSystem().register(vsCodeButton());
 
 const props = defineProps<{ addon: LocalAddon }>();
 
-const remoteAddonStore = useAddonStore();
 const appStore = useAppStore();
 
-// Get remote version of this addon to compare versions
-const remoteAddon = computed(() => remoteAddonStore.getAddon(props.addon.name));
-const updateAvailable = computed(() =>
-  remoteAddon.value?.commitDate?.isAfter(props.addon.installDate)
+const installDateFromNow = computed(() =>
+  dayjs(props.addon.installTimestamp).fromNow()
 );
+const installDate = computed(() =>
+  dayjs(props.addon.installTimestamp).local().format("MMMM DD, YYYY, h:mm A")
+);
+const updateAvailable = computed(() => props.addon.hasUpdate);
 
 const workspaceOpen = computed(() => appStore.workspaceOpen);
 
-const name = computed(() => props.addon.name);
-const enabled = computed(() => props.addon.enabled);
-const commitDate = computed(() => props.addon.installDate?.fromNow());
-const hasPlugin = computed(() => props.addon.hasPlugin);
+const uninstall = () => {
+  vscode.postMessage("uninstall", {
+    name: props.addon.name,
+  });
+};
+
+const disable = () => {
+  vscode.postMessage("disable", {
+    name: props.addon.name,
+  });
+};
+
+const enable = () => {
+  vscode.postMessage("enable", {
+    name: props.addon.name,
+  });
+};
+
+const update = () => {
+  vscode.postMessage("install", {
+    name: props.addon.name,
+  });
+};
+
+const open = () => {
+  vscode.postMessage("open", {
+    name: props.addon.name,
+  });
+};
 </script>

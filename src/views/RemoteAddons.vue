@@ -1,53 +1,52 @@
 <template>
   <div id="browser">
     <div class="controls">
-      <button class="refresh" :disabled="addonStore.loading" @click="refresh">
+      <button @click="refresh" :disabled="addonStore.loading" class="refresh">
         <CodeIcon icon="refresh" />
       </button>
     </div>
-    <vscode-progress-ring v-if="addonStore.loading" />
-    <div v-else class="addons">
+    <div class="addons">
       <RemoteAddon
         v-for="(addon, index) of addons"
         :key="index"
         :addon="addon"
       />
     </div>
+    <vscode-progress-ring v-if="addonStore.loading" />
+    <vscode-button
+      v-if="addonStore.total && addons.length < addonStore.total"
+      @click="addonStore.getPage()"
+      :disabled="addonStore.loading"
+      class="more"
+      >Load More</vscode-button
+    >
   </div>
 </template>
 <script setup lang="ts">
-import { watch, onMounted, computed } from "vue";
+import { onMounted, computed } from "vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 import RemoteAddon from "@/components/RemoteAddon.vue";
-import { useAddonStore } from "@/stores/remoteAddons";
-import { useAuthStore } from "@/stores/auth";
+import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 import {
   provideVSCodeDesignSystem,
   vsCodeProgressRing,
+  vsCodeButton,
 } from "@vscode/webview-ui-toolkit";
 
-provideVSCodeDesignSystem().register(vsCodeProgressRing());
+provideVSCodeDesignSystem().register(vsCodeProgressRing(), vsCodeButton());
 
-const authStore = useAuthStore();
-const addonStore = useAddonStore();
+const addonStore = useRemoteAddonStore();
 
 const addons = computed(() => addonStore.sortedByName);
 
 const refresh = () => {
   if (addonStore.loading) return;
-  addonStore.getList();
+  addonStore.addons = [];
+  addonStore.getPage(1);
 };
 
-onMounted(() => {
-  const clearWatch = watch(
-    () => authStore.access_token,
-    () => {
-      addonStore.getList();
-      clearWatch();
-    }
-  );
-});
+onMounted(() => addonStore.getPage());
 </script>
 
 <style lang="scss">
@@ -74,6 +73,12 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+  }
+
+  .more {
+    display: block;
+    width: fit-content;
+    margin: 1rem auto 1rem auto;
   }
 }
 </style>

@@ -1,20 +1,21 @@
 import { defineStore } from "pinia";
-import { getGitTree } from "@/services/github.service";
-import { ADDONS_DIRECTORY } from "@/config";
-import { RemoteAddon } from "@/services/addon.service";
+import type { RemoteAddon } from "@/types/addon";
+import { vscode } from "@/services/vscode.service";
 
-export type AddonStore = {
+export type RemoteAddonStore = {
   loading: boolean;
+  page: number;
   addons: RemoteAddon[];
-  addonsTruncated: boolean;
+  total: number | null;
   error: string | null;
 };
 
-export const useAddonStore = defineStore("remoteAddons", {
-  state: (): AddonStore => ({
+export const useRemoteAddonStore = defineStore("remoteAddons", {
+  state: (): RemoteAddonStore => ({
     loading: true,
+    page: 1,
     addons: [],
-    addonsTruncated: false,
+    total: null,
     error: null,
   }),
   getters: {
@@ -23,51 +24,11 @@ export const useAddonStore = defineStore("remoteAddons", {
     },
   },
   actions: {
-    async getList() {
-      this.loading = true;
-      this.addons = [];
+    async getPage(page?: number) {
+      if (page) this.page = page;
 
-      let addonFolderSHA: string;
-
-      // Get SHA of addons folder
-      try {
-        const data = await getGitTree("main");
-        const addonFolder = data.tree.find(
-          (node) => node.path === ADDONS_DIRECTORY
-        );
-        if (!addonFolder) {
-          console.error(`Could not find "${ADDONS_DIRECTORY}" folder`);
-          return;
-        }
-        addonFolderSHA = addonFolder.sha;
-      } catch (e) {
-        console.error(e);
-        return;
-      }
-
-      // Get addons
-      try {
-        const tree = await getGitTree(addonFolderSHA);
-        if (tree.truncated) {
-          this.addonsTruncated = true;
-          console.warn("Addons folder has been truncated!");
-        }
-
-        for (const node of tree.tree) {
-          const addon = new RemoteAddon(node.path, node.url);
-
-          Promise.all([
-            addon.getConfig(),
-            addon.getTree(),
-            addon.getModifiedDate(),
-          ]).then(() => this.addons.push(addon));
-        }
-      } catch (e) {
-        console.error(e);
-        return;
-      }
-
-      this.loading = false;
+      vscode.postMessage("getRemoteAddonPage", { page: this.page });
+      this.page++;
     },
     getAddon(name: string): RemoteAddon | undefined {
       return this.addons.find((addon) => addon.name === name);

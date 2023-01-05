@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Addon } from "@/services/addon.service";
+import type { Addon } from "@/types/addon";
 
 import CodeIcon from "./CodeIcon.vue";
 
@@ -50,7 +50,7 @@ const props = defineProps<{ addon: Addon }>();
 
 const url = `https://github.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/tree/main/${ADDONS_DIRECTORY}/${props.addon.name}`;
 
-const description = computed(() => props.addon.description ?? "No Description");
+const description = computed(() => props.addon.description ?? "No description");
 const size = computed(() =>
   props.addon.size ? formatBytes(props.addon.size) : "? B"
 );

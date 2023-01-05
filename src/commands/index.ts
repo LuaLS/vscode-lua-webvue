@@ -1,9 +1,15 @@
-import accessToken from "./accessToken";
-import localAddons from "./localAddons";
+import addLocalAddon from "./addLocalAddon";
+import removeLocalAddon from "./removeLocalAddon";
+import addRemoteAddon from "./addRemoteAddon";
 import workspaceOpen from "./workspaceOpen";
+import localAddonStore from "./localAddonStore";
+import remoteAddonStore from "./remoteAddonStore";
 
 export const commands: { [index: string]: (data: any) => any } = {
-  accessToken,
-  localAddons,
+  addLocalAddon,
+  removeLocalAddon,
+  addRemoteAddon,
   workspaceOpen,
+  localAddonStore,
+  remoteAddonStore,
 };

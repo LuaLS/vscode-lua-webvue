@@ -2,17 +2,17 @@
   <Addon :addon="props.addon">
     <template #badges>
       <span class="badge" v-if="commitDate">Updated {{ commitDate }}</span>
-      <span class="badge" v-if="hasPlugin">Plugin</span>
+      <span class="badge" v-if="addon.hasPlugin">Plugin</span>
     </template>
     <template #controls>
-      <vscode-button v-if="!installedAddonStore.loading && localAddon" disabled
+      <vscode-button v-if="!installedAddonStore.loading && installed" disabled
         >Installed</vscode-button
       >
       <vscode-button
-        v-if="!installedAddonStore.loading && !localAddon"
-        :aria-label="`Install ${name}`"
-        :title="`Install ${name}`"
-        @click="props.addon.download"
+        v-if="!installedAddonStore.loading && !installed"
+        :aria-label="`Install ${addon.name}`"
+        :title="`Install ${addon.name}`"
+        @click="download"
         >Install</vscode-button
       >
     </template>
@@ -20,31 +20,36 @@
 </template>
 
 <script setup lang="ts">
-import type { RemoteAddon } from "@/services/addon.service";
-
-import Addon from "./Addon.vue";
-import { PLUGIN_FILENAME } from "@/config";
+import type { RemoteAddon } from "@/types/addon";
 
 import { computed } from "vue";
-import { useInstalledAddonStore } from "@/stores/installedAddons";
+import dayjs from "dayjs";
+
+import Addon from "./Addon.vue";
+import { useLocalAddonsStore } from "@/stores/localAddons.store";
 
 import {
   provideVSCodeDesignSystem,
   vsCodeButton,
 } from "@vscode/webview-ui-toolkit";
+import { vscode } from "@/services/vscode.service";
 
 provideVSCodeDesignSystem().register(vsCodeButton());
 
 const props = defineProps<{ addon: RemoteAddon }>();
 
-const installedAddonStore = useInstalledAddonStore();
-const localAddon = computed(() =>
-  installedAddonStore.getAddon(props.addon.name)
+const installedAddonStore = useLocalAddonsStore();
+const installed = computed(
+  () => installedAddonStore.getAddon(props.addon.name) !== undefined
 );
 
-const name = computed(() => props.addon.name);
-const commitDate = computed(() => props.addon.commitDate?.fromNow());
-const hasPlugin = computed(() =>
-  props.addon.tree?.find((node) => node.path === PLUGIN_FILENAME)
+const commitDate = computed(() =>
+  dayjs(props.addon.latestCommitTimestamp)?.fromNow()
 );
+
+const download = () => {
+  vscode.postMessage("install", {
+    name: props.addon.name,
+  });
+};
 </script>
