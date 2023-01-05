@@ -1,19 +1,21 @@
 import { defineStore } from "pinia";
-import type { LocalAddon } from "@/services/addon.service";
 import { vscode } from "@/services/vscode.service";
+import type { LocalAddon } from "@/types/addon";
 
-export type InstalledAddonStore = {
+export type LocalAddonsStore = {
   loading: boolean;
   addons: LocalAddon[];
-  totalSize: number | null;
+  page: number;
+  total: number | null;
   error: string | null;
 };
 
-export const useInstalledAddonStore = defineStore("installedAddons", {
-  state: (): InstalledAddonStore => ({
+export const useLocalAddonsStore = defineStore("localAddons", {
+  state: (): LocalAddonsStore => ({
     loading: true,
     addons: [],
-    totalSize: null,
+    page: 1,
+    total: null,
     error: null,
   }),
   getters: {
@@ -22,13 +24,16 @@ export const useInstalledAddonStore = defineStore("installedAddons", {
     },
   },
   actions: {
-    getList() {
-      this.loading = true;
-      vscode.postMessage(
-        JSON.stringify({
-          command: "getInstalled",
-        })
-      );
+    getPage() {
+      vscode.postMessage("getLocalAddonsPage", {
+        page: this.page,
+      });
+      this.page++;
+    },
+    refresh() {
+      this.page = 1;
+      vscode.postMessage("refreshLocalAddons");
+      this.getPage();
     },
     getAddon(name: string) {
       return this.addons.find((addon) => addon.name === name);

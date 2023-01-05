@@ -39,26 +39,26 @@ window.addEventListener("message", (event: MessageEvent) => {
 
 // Save and restore state using Pinia and VS Code
 // https://code.visualstudio.com/api/extension-guides/webview#persistence
-import { useAddonStore, type AddonStore } from "./stores/remoteAddons";
-import { useAuthStore, type AuthStore } from "./stores/auth";
 import {
-  useInstalledAddonStore,
-  type InstalledAddonStore,
-} from "./stores/installedAddons";
+  useRemoteAddonStore,
+  type RemoteAddonStore,
+} from "./stores/remoteAddons";
+import {
+  useLocalAddonsStore,
+  type LocalAddonsStore,
+} from "./stores/localAddons.store";
 import { useAppStore, type AppStore } from "./stores/app";
-import { LocalAddon, RemoteAddon } from "./services/addon.service";
+import type { LocalAddon, RemoteAddon } from "./types/addon";
 
 type State = {
-  authStore: AuthStore;
-  addonStore: AddonStore;
-  installedAddonStore: InstalledAddonStore;
+  addonStore: RemoteAddonStore;
+  installedAddonStore: LocalAddonsStore;
   appStore: AppStore;
 };
 
 if (!import.meta.env.DEV) {
-  const addonStore = useAddonStore();
-  const authStore = useAuthStore();
-  const installedAddonStore = useInstalledAddonStore();
+  const addonStore = useRemoteAddonStore();
+  const installedAddonStore = useLocalAddonsStore();
   const appStore = useAppStore();
 
   // WARN: things may have to be properly deserialized here
@@ -69,20 +69,18 @@ if (!import.meta.env.DEV) {
 
   if (previousState) {
     previousState.addonStore.addons.forEach((serializedAddon, index) => {
-      previousState.addonStore.addons[index] =
-        RemoteAddon.loadFromState(serializedAddon);
+      // previousState.addonStore.addons[index] =
+      // RemoteAddon.loadFromState(serializedAddon);
     });
 
     previousState.installedAddonStore.addons.forEach(
       (serializedAddon, index) => {
-        previousState.installedAddonStore.addons[index] =
-          LocalAddon.loadFromState(serializedAddon);
+        // previousState.installedAddonStore.addons[index] =
+        // LocalAddon.loadFromState(serializedAddon);
       }
     );
 
     console.log(previousState);
-
-    authStore.$state = previousState.authStore;
     addonStore.$state = previousState.addonStore;
     installedAddonStore.$state = previousState.installedAddonStore;
     appStore.$state = previousState.appStore;
@@ -90,7 +88,6 @@ if (!import.meta.env.DEV) {
 
   const saveState = () => {
     const state: State = {
-      authStore: authStore.$state,
       addonStore: addonStore.$state,
       installedAddonStore: installedAddonStore.$state,
       appStore: appStore.$state,
@@ -100,7 +97,6 @@ if (!import.meta.env.DEV) {
   };
 
   // Save state on update to stores
-  authStore.$subscribe(() => saveState());
   addonStore.$subscribe(() => saveState());
   installedAddonStore.$subscribe(() => saveState());
   appStore.$subscribe(() => saveState());

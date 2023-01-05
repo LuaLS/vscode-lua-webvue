@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import RelativeTime from "dayjs/plugin/relativeTime";
+import UTC from "dayjs/plugin/utc";
 dayjs.extend(RelativeTime);
+dayjs.extend(UTC);
 
 export const formatBytes = (bytes: number): string => {
   const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];

@@ -2,12 +2,13 @@ import { describe, it, expect } from "vitest";
 
 import { mount } from "@vue/test-utils";
 import AddonVue from "../Addon.vue";
-import { Addon } from "@/services/addon.service";
 
 describe("Addon Component", () => {
-  const addon = new Addon("TEST");
-  addon.description = "A DESCRIPTION";
-  addon.size = 54321;
+  const addon = {
+    name: "TEST",
+    description: "A DESCRIPTION",
+    size: 54321,
+  };
 
   const wrapper = mount(AddonVue, {
     props: { addon },

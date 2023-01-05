@@ -5,10 +5,7 @@ export type AppStore = {
 };
 
 export const useAppStore = defineStore("app", {
-  state: (): AppStore => {
-    return {
-      workspaceOpen: false,
-    };
-  },
-  actions: {},
+  state: (): AppStore => ({
+    workspaceOpen: false,
+  }),
 });

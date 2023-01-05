@@ -28,12 +28,16 @@ class VSCodeAPIWrapper {
    *
    * @param message Arbitrary data (must be JSON serializable) to send to the extension context.
    */
-  public postMessage(message: unknown) {
+  public postMessage(command: string, data?: { [index: string]: any }) {
     if (this.vsCodeApi) {
-      this.vsCodeApi.postMessage(message);
+      this.vsCodeApi.postMessage({ command, data });
     } else {
-      console.log(`Posting ${message} in development mode`);
-      window.parent.postMessage(message, "*");
+      console.groupCollapsed(
+        `Posting "${command}" message in development mode`
+      );
+      console.log(data);
+      console.groupEnd();
+      window.parent.postMessage({ command, data }, "*");
     }
   }
 

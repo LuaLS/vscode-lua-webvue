@@ -5,25 +5,34 @@
         <CodeIcon icon="refresh" />
       </button>
     </div>
-    <vscode-progress-ring v-if="addonStore.loading" />
-    <div v-else>
-      <div v-if="addons.length === 0">
-        <h2 class="text-center">None Installed</h2>
-      </div>
-      <div v-else class="addons">
-        <LocalAddon
-          v-for="(addon, index) of addons"
-          :key="index"
-          :addon="addon"
-        />
-      </div>
+    <div v-if="addons.length === 0">
+      <h2 class="text-center">None Installed</h2>
     </div>
+    <div v-else class="addons">
+      <LocalAddon
+        v-for="(addon, index) of addons"
+        :key="index"
+        :addon="addon"
+      />
+    </div>
+    <vscode-progress-ring v-if="addonStore.loading" />
+    <vscode-button
+      v-if="
+        addonStore.total &&
+        addons.length > 0 &&
+        addons.length < addonStore.total
+      "
+      @click="addonStore.getPage()"
+      :disabled="addonStore.loading"
+      class="more"
+      >Load More</vscode-button
+    >
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useInstalledAddonStore } from "@/stores/installedAddons";
+import { computed, onMounted } from "vue";
+import { useLocalAddonsStore } from "@/stores/localAddons.store.js";
 import LocalAddon from "@/components/LocalAddon.vue";
 import CodeIcon from "@/components/CodeIcon.vue";
 
@@ -34,14 +43,17 @@ import {
 
 provideVSCodeDesignSystem().register(vsCodeProgressRing());
 
-const addonStore = useInstalledAddonStore();
+const addonStore = useLocalAddonsStore();
 
 const addons = computed(() => addonStore.sortedByName);
 
 const refresh = () => {
   if (addonStore.loading) return;
-  addonStore.getList();
+  addonStore.addons = [];
+  addonStore.refresh();
 };
+
+onMounted(() => addonStore.getPage());
 </script>
 
 <style scoped lang="scss">
@@ -68,6 +80,12 @@ const refresh = () => {
     display: flex;
     flex-direction: column;
     gap: 0.4em;
+  }
+
+  .more {
+    display: block;
+    width: fit-content;
+    margin: 1rem auto 1rem auto;
   }
 }
 </style>
