@@ -1,10 +1,3 @@
-/** `config.json` file structure for an addon */
-export type AddonConfig = {
-  name: string;
-  description: string;
-  settings: { [index: string]: Object };
-};
-
 export interface Addon {
   name: string;
   displayName?: string;
@@ -20,5 +13,7 @@ export interface LocalAddon extends Addon {
 }
 
 export interface RemoteAddon extends Addon {
+  sha?: string;
+  uri?: string;
   latestCommitTimestamp?: number;
 }
