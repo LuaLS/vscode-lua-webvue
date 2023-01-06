@@ -7,6 +7,11 @@ type Message = {
   };
 };
 
+/** Receives a `LocalAddon` or array of `LocalAddon`s. Updates the
+ * `localAddonsStore` state to contain the new addons. If the store already
+ * contains an addon with the same name, it will be overwritten.
+ * @param message The message from VS Code
+ * */
 export default (message: Message) => {
   const addonStore = useLocalAddonsStore();
 

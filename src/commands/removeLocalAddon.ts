@@ -1,5 +1,8 @@
 import { useLocalAddonsStore } from "@/stores/localAddons.store";
 
+/** Remove a `LocalAddon` from the `localAddonStore` state.
+ *
+ * Used when uninstalling an addon. */
 export default (message: { data: { name: string } }) => {
   const addonStore = useLocalAddonsStore();
 

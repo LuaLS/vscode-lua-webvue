@@ -20,6 +20,7 @@ import { commands } from "./commands";
 import { vscode } from "@/services/vscode.service";
 
 // Listen for messages from VS Code
+// https://code.visualstudio.com/api/extension-guides/webview#scripts-and-message-passing
 window.addEventListener("message", (event: MessageEvent) => {
   const data = event.data;
   const command = data.command as string;
