@@ -2,7 +2,7 @@ import { useLocalAddonsStore } from "@/stores/localAddons.store";
 
 type Message = {
   data: {
-    prop: string;
+    property: string;
     value: any;
   };
 };
@@ -10,8 +10,8 @@ type Message = {
 export default (message: Message) => {
   const localAddonStore = useLocalAddonsStore();
 
-  const { prop, value } = message.data;
+  const { property, value } = message.data;
 
   //@ts-ignore
-  localAddonStore[prop] = value;
+  localAddonStore[property] = value;
 };

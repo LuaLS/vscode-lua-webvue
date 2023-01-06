@@ -2,7 +2,7 @@ import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 type Message = {
   data: {
-    prop: string;
+    property: string;
     value: any;
   };
 };
@@ -10,8 +10,8 @@ type Message = {
 export default (message: Message) => {
   const remoteAddonStore = useRemoteAddonStore();
 
-  const { prop, value } = message.data;
+  const { property, value } = message.data;
 
   //@ts-ignore
-  remoteAddonStore[prop] = value;
+  remoteAddonStore[property] = value;
 };

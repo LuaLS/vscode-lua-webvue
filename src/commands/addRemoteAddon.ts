@@ -1,20 +1,30 @@
 import { useRemoteAddonStore } from "@/stores/remoteAddons";
 import type { RemoteAddon } from "@/types/addon";
 
-export default (data: { data: RemoteAddon }) => {
+type Message = {
+  data: {
+    addons: RemoteAddon | RemoteAddon[];
+  };
+};
+
+export default (message: Message) => {
   const addonStore = useRemoteAddonStore();
 
-  const index = addonStore.addons.findIndex(
-    (addon) => addon.name === data.data.name
-  );
+  const addons = Array.isArray(message.data.addons)
+    ? message.data.addons
+    : [message.data.addons];
 
-  if (index > -1) {
-    Object.assign(addonStore.addons[index], data.data);
-  } else {
-    addonStore.$patch((state) => {
-      state.addons.push(data.data);
-    });
-  }
+  addonStore.$patch((state) => {
+    for (const newAddon of addons) {
+      const index = state.addons.findIndex(
+        (addon) => addon.name === newAddon.name
+      );
 
-  addonStore.loading = false;
+      if (index > -1) {
+        Object.assign(state.addons[index], newAddon);
+      } else {
+        state.addons.push(newAddon);
+      }
+    }
+  });
 };
