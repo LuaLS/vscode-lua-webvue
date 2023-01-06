@@ -32,11 +32,6 @@ class VSCodeAPIWrapper {
     if (this.vsCodeApi) {
       this.vsCodeApi.postMessage({ command, data });
     } else {
-      console.groupCollapsed(
-        `Posting "${command}" message in development mode`
-      );
-      console.log(data);
-      console.groupEnd();
       window.parent.postMessage({ command, data }, "*");
     }
   }
