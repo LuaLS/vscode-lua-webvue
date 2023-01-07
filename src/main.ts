@@ -62,9 +62,6 @@ const appStore = useAppStore();
 
 const previousState = vscode.getState() as State;
 
-console.log("PREVIOUS STATE");
-console.log(previousState);
-
 if (previousState) {
   addonStore.$state = previousState.addonStore;
   installedAddonStore.$state = previousState.installedAddonStore;
