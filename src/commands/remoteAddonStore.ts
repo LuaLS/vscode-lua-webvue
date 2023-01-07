@@ -2,8 +2,8 @@ import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 type Message = {
   data: {
-    property: "loading";
-    value: boolean;
+    property: string;
+    value: unknown;
   };
 };
 
@@ -13,5 +13,6 @@ export default (message: Message) => {
 
   const { property, value } = message.data;
 
+  //@ts-ignore
   remoteAddonStore[property] = value;
 };

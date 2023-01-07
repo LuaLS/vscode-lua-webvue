@@ -2,8 +2,8 @@ import { useLocalAddonsStore } from "@/stores/localAddons.store";
 
 type Message = {
   data: {
-    property: "loading";
-    value: boolean;
+    property: string;
+    value: unknown;
   };
 };
 
@@ -13,5 +13,6 @@ export default (message: Message) => {
 
   const { property, value } = message.data;
 
+  //@ts-ignore
   localAddonStore[property] = value;
 };
