@@ -49,7 +49,6 @@ import {
   type LocalAddonsStore,
 } from "./stores/localAddons.store";
 import { useAppStore, type AppStore } from "./stores/app";
-import type { LocalAddon, RemoteAddon } from "./types/addon";
 
 type State = {
   addonStore: RemoteAddonStore;
@@ -62,26 +61,12 @@ if (!import.meta.env.DEV) {
   const installedAddonStore = useLocalAddonsStore();
   const appStore = useAppStore();
 
-  // WARN: things may have to be properly deserialized here
   const previousState = vscode.getState() as State;
 
   console.log("PREVIOUS STATE");
   console.log(previousState);
 
   if (previousState) {
-    previousState.addonStore.addons.forEach((serializedAddon, index) => {
-      // previousState.addonStore.addons[index] =
-      // RemoteAddon.loadFromState(serializedAddon);
-    });
-
-    previousState.installedAddonStore.addons.forEach(
-      (serializedAddon, index) => {
-        // previousState.installedAddonStore.addons[index] =
-        // LocalAddon.loadFromState(serializedAddon);
-      }
-    );
-
-    console.log(previousState);
     addonStore.$state = previousState.addonStore;
     installedAddonStore.$state = previousState.installedAddonStore;
     appStore.$state = previousState.appStore;

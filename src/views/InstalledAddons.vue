@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useLocalAddonsStore } from "@/stores/localAddons.store.js";
 import LocalAddon from "@/components/LocalAddon.vue";
 import CodeIcon from "@/components/CodeIcon.vue";
