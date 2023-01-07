@@ -56,34 +56,32 @@ type State = {
   appStore: AppStore;
 };
 
-if (!import.meta.env.DEV) {
-  const addonStore = useRemoteAddonStore();
-  const installedAddonStore = useLocalAddonsStore();
-  const appStore = useAppStore();
+const addonStore = useRemoteAddonStore();
+const installedAddonStore = useLocalAddonsStore();
+const appStore = useAppStore();
 
-  const previousState = vscode.getState() as State;
+const previousState = vscode.getState() as State;
 
-  console.log("PREVIOUS STATE");
-  console.log(previousState);
+console.log("PREVIOUS STATE");
+console.log(previousState);
 
-  if (previousState) {
-    addonStore.$state = previousState.addonStore;
-    installedAddonStore.$state = previousState.installedAddonStore;
-    appStore.$state = previousState.appStore;
-  }
+if (previousState) {
+  addonStore.$state = previousState.addonStore;
+  installedAddonStore.$state = previousState.installedAddonStore;
+  appStore.$state = previousState.appStore;
+}
 
-  const saveState = () => {
-    const state: State = {
-      addonStore: addonStore.$state,
-      installedAddonStore: installedAddonStore.$state,
-      appStore: appStore.$state,
-    };
-
-    vscode.setState(state);
+const saveState = () => {
+  const state: State = {
+    addonStore: addonStore.$state,
+    installedAddonStore: installedAddonStore.$state,
+    appStore: appStore.$state,
   };
 
-  // Save state on update to stores
-  addonStore.$subscribe(() => saveState());
-  installedAddonStore.$subscribe(() => saveState());
-  appStore.$subscribe(() => saveState());
-}
+  vscode.setState(state);
+};
+
+// Save state on update to stores
+addonStore.$subscribe(() => saveState());
+installedAddonStore.$subscribe(() => saveState());
+appStore.$subscribe(() => saveState());
