@@ -26,7 +26,7 @@ Because this webapp depends on the [VS Code API][vscode-api], it has a bit of an
 
 In order to not have to build the webapp and reload VS Code every time a small change is made, the VS Code extension will instead load the [Vite][vite] development server in an iframe. This allows changes to the webapp to immediately show in VS Code, but also has some drawbacks.
 
-Because the webapp is being displayed in an iframe... in an iframe, the [`message`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)s that are exchanged between VS Code and the webview have to be relayed by the webview to the inner development iframe. This means that **popups/`target="_blank"` will not function** (setting the [`sandbox`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/sandbox) attribute allows popups, but ends up breaking everything else). **The [state](https://code.visualstudio.com/api/extension-guides/webview#persistence) of the webview is also not properly maintained when it is running in the development iframe**. I have not looked into this deeply enough to know if this can be resolved, but for now, closing and re-opening the webview works.
+Because the webapp is being displayed in an iframe... in an iframe, the [`message`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)s that are exchanged between VS Code and the webview have to be relayed by the webview to the inner development iframe. This means that **popups/`target="_blank"` will not function** (setting the [`sandbox`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/sandbox) attribute allows popups, but ends up breaking everything else).
 
 ### Prerequisites
 - VS Code
