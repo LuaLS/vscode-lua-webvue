@@ -29,5 +29,3 @@ provideVSCodeDesignSystem().register(
   vsCodePanelView()
 );
 </script>
-
-<style lang="scss"></style>
