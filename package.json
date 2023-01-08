@@ -8,6 +8,7 @@
     "preview": "vite preview",
     "test": "vitest --environment jsdom --root src/",
     "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit --composite false",
     "lint": "eslint src/ --ignore-path .gitignore",
     "lint:fix": "eslint src/ --fix --ignore-path .gitignore",
     "style": "prettier --list-different src/"
