@@ -20,7 +20,7 @@ import CodeIcon from "./components/CodeIcon.vue";
 import { vscode } from "./services/vscode.service";
 
 const devMode = import.meta.env.DEV;
-const version = window.VERSION;
+const version = import.meta.env.APP_VERSION;
 
 const openLog = () => vscode.postMessage("openLog");
 </script>
