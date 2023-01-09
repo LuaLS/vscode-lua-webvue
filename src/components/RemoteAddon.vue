@@ -1,7 +1,9 @@
 <template>
   <Addon :addon="props.addon">
     <template #badges>
-      <span class="badge" v-if="commitDate">Updated {{ commitDate }}</span>
+      <span class="badge" v-if="commitDate" :title="commitDate">
+        <CodeIcon icon="git-commit" /> {{ commitSince }}
+      </span>
       <span class="badge" v-if="addon.hasPlugin">Plugin</span>
     </template>
     <template #controls>
@@ -33,6 +35,7 @@ import {
   vsCodeButton,
 } from "@vscode/webview-ui-toolkit";
 import { vscode } from "@/services/vscode.service";
+import CodeIcon from "./CodeIcon.vue";
 
 provideVSCodeDesignSystem().register(vsCodeButton());
 
@@ -43,8 +46,11 @@ const installed = computed(
   () => installedAddonStore.getAddon(props.addon.name) !== undefined
 );
 
-const commitDate = computed(() =>
+const commitSince = computed(() =>
   dayjs(props.addon.latestCommitTimestamp)?.fromNow()
+);
+const commitDate = computed(() =>
+  dayjs(props.addon.latestCommitTimestamp)?.format("MMMM DD, YYYY, h:mm A")
 );
 
 const download = () => {
