@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useLocalAddonsStore } from "@/stores/localAddons.store.js";
 import LocalAddon from "@/components/LocalAddon.vue";
 import CodeIcon from "@/components/CodeIcon.vue";
@@ -40,12 +40,10 @@ import {
   provideVSCodeDesignSystem,
   vsCodeProgressRing,
 } from "@vscode/webview-ui-toolkit";
-import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 provideVSCodeDesignSystem().register(vsCodeProgressRing());
 
 const addonStore = useLocalAddonsStore();
-const remoteAddonStore = useRemoteAddonStore();
 
 const addons = computed(() => addonStore.sortedByName);
 
@@ -55,12 +53,7 @@ const refresh = () => {
   addonStore.refresh();
 };
 
-const watcher = remoteAddonStore.$subscribe((m, state) => {
-  if (!state.loading) {
-    addonStore.getPage();
-    watcher();
-  }
-});
+onMounted(() => addonStore.getPage());
 </script>
 
 <style scoped lang="scss">
