@@ -7,7 +7,6 @@ export default (message: { data: { name: string } }) => {
   const addonStore = useLocalAddonsStore();
 
   const index = addonStore.addons.findIndex((addon) => {
-    console.log(addon.name, message.data.name);
     return addon.name === message.data.name;
   });
 
