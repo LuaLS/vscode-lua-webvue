@@ -10,8 +10,11 @@
       <vscode-button v-if="!installedAddonStore.loading && installed" disabled
         >Installed</vscode-button
       >
+      <vscode-button v-if="processing && !installed" disabled
+        >Installing...</vscode-button
+      >
       <vscode-button
-        v-if="!installedAddonStore.loading && !installed"
+        v-if="!installedAddonStore.loading && !installed && !processing"
         :aria-label="`Install ${addon.name}`"
         :title="`Install ${addon.name}`"
         @click="download"
@@ -40,6 +43,8 @@ import CodeIcon from "./CodeIcon.vue";
 provideVSCodeDesignSystem().register(vsCodeButton());
 
 const props = defineProps<{ addon: RemoteAddon }>();
+
+const processing = computed(() => props.addon.processing);
 
 const installedAddonStore = useLocalAddonsStore();
 const installed = computed(

@@ -20,6 +20,7 @@
     <template #controls>
       <vscode-button
         v-if="updateAvailable"
+        :disabled="processing"
         @click="update"
         :aria-label="`Update ${props.addon.name}`"
         :title="`Update ${props.addon.name}`"
@@ -27,7 +28,7 @@
       >
       <vscode-button
         v-if="!props.addon.enabled"
-        :disabled="!workspaceOpen"
+        :disabled="!workspaceOpen || processing"
         :aria-label="`Enable ${props.addon.name}`"
         :title="
           !workspaceOpen
@@ -40,7 +41,7 @@
       >
       <vscode-button
         v-if="props.addon.enabled"
-        :disabled="!workspaceOpen"
+        :disabled="!workspaceOpen || processing"
         :aria-label="`Disable ${props.addon.name}`"
         :title="
           !workspaceOpen
@@ -55,6 +56,7 @@
         :aria-label="`Uninstall ${props.addon.name}`"
         :title="`Uninstall ${props.addon.name}`"
         @click="uninstall"
+        :disabled="processing"
         appearance="secondary"
         >Uninstall</vscode-button
       >
@@ -78,9 +80,11 @@ import { vscode } from "@/services/vscode.service";
 
 provideVSCodeDesignSystem().register(vsCodeButton());
 
+const appStore = useAppStore();
+
 const props = defineProps<{ addon: LocalAddon }>();
 
-const appStore = useAppStore();
+const processing = computed(() => props.addon.processing);
 
 const installDateFromNow = computed(() =>
   dayjs(props.addon.installTimestamp).fromNow()

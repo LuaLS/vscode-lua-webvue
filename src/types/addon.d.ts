@@ -4,6 +4,7 @@ export interface Addon {
   description?: string;
   size?: number;
   hasPlugin?: boolean;
+  processing?: boolean;
 }
 
 export interface LocalAddon extends Addon {
