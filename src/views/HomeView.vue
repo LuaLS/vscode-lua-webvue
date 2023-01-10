@@ -3,12 +3,12 @@
     <vscode-panels>
       <vscode-panel-tab
         >BROWSE<vscode-badge>{{
-          remoteAddonStore.total
+          remoteAddonStore.total ?? "-"
         }}</vscode-badge></vscode-panel-tab
       >
       <vscode-panel-tab
         >INSTALLED<vscode-badge>{{
-          localAddonStore.total
+          localAddonStore.total ?? "-"
         }}</vscode-badge></vscode-panel-tab
       >
       <vscode-panel-view id="browse">
