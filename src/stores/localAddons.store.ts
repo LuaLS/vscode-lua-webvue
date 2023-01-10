@@ -20,7 +20,10 @@ export const useLocalAddonsStore = defineStore("localAddons", {
   }),
   getters: {
     sortedByName(state): LocalAddon[] {
-      return [...state.addons].sort((a, b) => a.name.localeCompare(b.name));
+      return [...state.addons].sort((a, b) => {
+        if (a.hasUpdate) return -1;
+        return a.name.localeCompare(b.name);
+      });
     },
   },
   actions: {
