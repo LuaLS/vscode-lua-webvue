@@ -1,9 +1,10 @@
+
 # vscode-lua-webvue
-A [Vue](https://vuejs.org/) web application that it used by [Sumneko's Lua VS Code extension][vscode-lua]. The extension allows users to open a [webview](https://code.visualstudio.com/api/extension-guides/webview) that contains this webapp. This webapp gives users a reactive and first-party looking UI to manage their addons.
+A [Vue](https://vuejs.org/) web application that is used by [Sumneko's Lua VS Code extension][vscode-lua]. The extension allows users to open a [webview](https://code.visualstudio.com/api/extension-guides/webview) that contains this webapp. This webapp gives users a reactive and first-party looking UI to manage their addons.
 
 
 ## Usage
-This webapp is not intended to be run outside of VS Code as it depends on the [VS Code API][vscode-api] in order to perform filesystem actions and commands specific to VS Code.
+This webapp is not intended to be run outside of VS Code, as it depends on the [VS Code API][vscode-api] in order to perform filesystem actions and commands specific to VS Code.
 
 For using with [Sumneko's VS Code extension][vscode-lua], you can follow these steps:
 
@@ -26,11 +27,11 @@ Because this webapp depends on the [VS Code API][vscode-api], it has a bit of an
 
 In order to not have to build the webapp and reload VS Code every time a small change is made, the VS Code extension will instead load the [Vite][vite] development server in an iframe. This allows changes to the webapp to immediately show in VS Code, but also has some drawbacks.
 
-Because the webapp is being displayed in an iframe... in an iframe, the [`message`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)s that are exchanged between VS Code and the webview have to be relayed by the webview to the inner development iframe. This means that **popups/`target="_blank"` will not function** (setting the [`sandbox`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/sandbox) attribute allows popups, but ends up breaking everything else).
+Because the webapp is being displayed in an iframe… in an iframe, the [`message`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)s that are exchanged between VS Code and the webview have to be relayed by the webview to the inner development iframe. This means that **popups/`target="_blank"` will not function** (setting the [`sandbox`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/sandbox) attribute allows popups, but ends up breaking everything else).
 
 ### Prerequisites
 - VS Code
-- Nodejs & npm
+- NodeJS & NPM
 
 ### Setup
 First, we will have to set up the VS Code extension.
@@ -59,3 +60,4 @@ First, we will have to set up the VS Code extension.
 [vscode-api]: https://code.visualstudio.com/api/references/vscode-api
 [vscode-lua]: https://github.com/sumneko/vscode-lua
 [vite]: https://vitejs.dev/
+
