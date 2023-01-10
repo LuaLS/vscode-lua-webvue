@@ -77,10 +77,12 @@ import {
 } from "@vscode/webview-ui-toolkit";
 import { useAppStore } from "@/stores/app";
 import { vscode } from "@/services/vscode.service";
+import { useLocalAddonsStore } from "@/stores/localAddons.store";
 
 provideVSCodeDesignSystem().register(vsCodeButton());
 
 const appStore = useAppStore();
+const addonStore = useLocalAddonsStore();
 
 const props = defineProps<{ addon: LocalAddon }>();
 
@@ -100,24 +102,48 @@ const uninstall = () => {
   vscode.postMessage("uninstall", {
     name: props.addon.name,
   });
+  const storeVersion = addonStore.addons.find(
+    (addon) => addon.name === props.addon.name
+  );
+  if (storeVersion) {
+    storeVersion.processing = true;
+  }
 };
 
 const disable = () => {
   vscode.postMessage("disable", {
     name: props.addon.name,
   });
+  const storeVersion = addonStore.addons.find(
+    (addon) => addon.name === props.addon.name
+  );
+  if (storeVersion) {
+    storeVersion.processing = true;
+  }
 };
 
 const enable = () => {
   vscode.postMessage("enable", {
     name: props.addon.name,
   });
+  const storeVersion = addonStore.addons.find(
+    (addon) => addon.name === props.addon.name
+  );
+  if (storeVersion) {
+    storeVersion.processing = true;
+  }
 };
 
 const update = () => {
   vscode.postMessage("install", {
     name: props.addon.name,
   });
+  const storeVersion = addonStore.addons.find(
+    (addon) => addon.name === props.addon.name
+  );
+  if (storeVersion) {
+    storeVersion.processing = true;
+  }
 };
 
 const open = () => {

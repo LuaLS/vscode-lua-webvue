@@ -39,8 +39,11 @@ import {
 } from "@vscode/webview-ui-toolkit";
 import { vscode } from "@/services/vscode.service";
 import CodeIcon from "./CodeIcon.vue";
+import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 provideVSCodeDesignSystem().register(vsCodeButton());
+
+const addonStore = useRemoteAddonStore();
 
 const props = defineProps<{ addon: RemoteAddon }>();
 
@@ -62,5 +65,12 @@ const download = () => {
   vscode.postMessage("install", {
     name: props.addon.name,
   });
+
+  const storeVersion = addonStore.addons.find(
+    (addon) => addon.name === props.addon.name
+  );
+  if (storeVersion) {
+    storeVersion.processing = true;
+  }
 };
 </script>
