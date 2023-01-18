@@ -1,5 +1,5 @@
 <template>
-  <div id="local">
+  <div id="browse">
     <div class="controls">
       <button class="refresh" :disabled="addonStore.loading" @click="refresh">
         <CodeIcon icon="refresh" />
@@ -53,7 +53,7 @@ onMounted(() => addonStore.getPage());
 </script>
 
 <style scoped lang="scss">
-#local {
+#browse {
   width: 100%;
 
   > .controls {
@@ -76,6 +76,7 @@ onMounted(() => addonStore.getPage());
     display: flex;
     flex-direction: column;
     gap: 0.4em;
+    margin: 0px 0.5em;
   }
 
   .more {
