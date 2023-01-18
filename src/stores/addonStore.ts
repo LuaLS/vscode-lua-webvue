@@ -1,17 +1,17 @@
 import { defineStore } from "pinia";
 import { vscode } from "@/services/vscode.service";
-import type { LocalAddon } from "@/types/addon";
+import type { Addon } from "@/types/addon";
 
-export type LocalAddonsStore = {
+export type AddonStore = {
   loading: boolean;
-  addons: LocalAddon[];
+  addons: Addon[];
   page: number;
   total: number | null;
   error: string | null;
 };
 
-export const useLocalAddonsStore = defineStore("localAddons", {
-  state: (): LocalAddonsStore => ({
+export const useAddonStore = defineStore("addons", {
+  state: (): AddonStore => ({
     loading: true,
     addons: [],
     page: 1,
@@ -19,7 +19,7 @@ export const useLocalAddonsStore = defineStore("localAddons", {
     error: null,
   }),
   getters: {
-    sortedByName(state): LocalAddon[] {
+    sortedByName(state): Addon[] {
       return [...state.addons].sort((a, b) => {
         if (a.hasUpdate) return -1;
         return a.name.localeCompare(b.name);
@@ -28,14 +28,14 @@ export const useLocalAddonsStore = defineStore("localAddons", {
   },
   actions: {
     getPage() {
-      vscode.postMessage("getLocalAddonsPage", {
+      vscode.postMessage("getAddonsPage", {
         page: this.page,
       });
       this.page++;
     },
     refresh() {
       this.page = 1;
-      vscode.postMessage("refreshLocalAddons");
+      vscode.postMessage("refreshAddons");
       this.getPage();
     },
     getAddon(name: string) {

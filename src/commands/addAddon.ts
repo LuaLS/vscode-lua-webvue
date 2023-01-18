@@ -1,19 +1,19 @@
-import { useRemoteAddonStore } from "@/stores/remoteAddons";
-import type { RemoteAddon } from "@/types/addon";
+import { useAddonStore } from "@/stores/addonStore";
+import type { Addon } from "@/types/addon";
 
 type Message = {
   data: {
-    addons: RemoteAddon | RemoteAddon[];
+    addons: Addon[];
   };
 };
 
-/** Receives a `RemoteAddon` or array of `RemoteAddon`s. Updates the
- * `remoteAddonsStore` state to contain the new addons. If the store already
+/** Receives a `LocalAddon` or array of `LocalAddon`s. Updates the
+ * `localAddonsStore` state to contain the new addons. If the store already
  * contains an addon with the same name, it will be overwritten.
  * @param message The message from VS Code
  * */
 export default (message: Message) => {
-  const addonStore = useRemoteAddonStore();
+  const addonStore = useAddonStore();
 
   const addons = Array.isArray(message.data.addons)
     ? message.data.addons
