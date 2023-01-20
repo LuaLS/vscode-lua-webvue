@@ -8,5 +8,5 @@ export interface Addon {
   hasPlugin?: boolean;
   processing?: boolean;
   hasUpdate?: boolean;
-  enabled?: boolean;
+  enabled?: boolean[];
 }

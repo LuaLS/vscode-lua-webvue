@@ -41,14 +41,14 @@
           Update
         </vscode-button>
         <vscode-button
-          v-if="!addon.enabled"
+          v-if="canBeEnabled"
           @click="enable"
           :disabled="addon.processing"
         >
           Enable
         </vscode-button>
         <vscode-button
-          v-if="addon.enabled"
+          v-if="canBeDisabled"
           @click="disable"
           appearance="secondary"
           :disabled="addon.processing"
@@ -86,6 +86,12 @@ const url = `https://github.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/tree/main
 const description = computed(() => props.addon.description ?? "No description");
 const size = computed(() =>
   props.addon.size ? formatBytes(props.addon.size) : "? B"
+);
+const canBeEnabled = computed(() =>
+  props.addon.enabled?.some((v) => v === false)
+);
+const canBeDisabled = computed(() =>
+  props.addon.enabled?.some((v) => v === true)
 );
 
 const lockAddon = () => {
