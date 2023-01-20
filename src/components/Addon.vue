@@ -55,6 +55,13 @@
         >
           Disable
         </vscode-button>
+        <vscode-button
+          v-if="addon.installed"
+          appearance="secondary"
+          @click="uninstall"
+        >
+          Uninstall
+        </vscode-button>
       </div>
     </div>
   </div>
@@ -119,6 +126,10 @@ const enable = () => {
 const disable = () => {
   lockAddon();
   vscode.postMessage("disable", { name: props.addon.name });
+};
+const uninstall = () => {
+  lockAddon();
+  vscode.postMessage("uninstall", { name: props.addon.name });
 };
 </script>
 

@@ -9,4 +9,5 @@ export interface Addon {
   processing?: boolean;
   hasUpdate?: boolean;
   enabled?: boolean[];
+  installed?: boolean;
 }
