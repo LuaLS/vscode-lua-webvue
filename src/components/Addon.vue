@@ -6,7 +6,9 @@
           {{ addon.displayName ?? addon.name }}
         </h1>
         <span class="badges">
-          <slot name="badges" />
+          <span v-if="addon.hasPlugin" class="badge"
+            ><CodeIcon icon="plug" />Has Plugin</span
+          >
         </span>
       </div>
       <p class="description truncate">
@@ -19,7 +21,7 @@
     <div class="right">
       <div class="top">
         <div class="quick-actions">
-          <slot name="quick-actions" />
+          <button @click="open"><CodeIcon icon="folder" /></button>
           <a
             :href="url"
             target="_blank"
@@ -31,7 +33,35 @@
         </div>
       </div>
       <div class="controls">
-        <slot name="controls" />
+        <vscode-button
+          v-if="addon.hasUpdate"
+          @click="update"
+          :disabled="addon.processing"
+        >
+          Update
+        </vscode-button>
+        <vscode-button
+          v-if="canBeEnabled"
+          @click="enable"
+          :disabled="addon.processing"
+        >
+          Enable
+        </vscode-button>
+        <vscode-button
+          v-if="canBeDisabled"
+          @click="disable"
+          appearance="secondary"
+          :disabled="addon.processing"
+        >
+          Disable
+        </vscode-button>
+        <vscode-button
+          v-if="addon.installed"
+          appearance="secondary"
+          @click="uninstall"
+        >
+          Uninstall
+        </vscode-button>
       </div>
     </div>
   </div>
@@ -45,6 +75,16 @@ import CodeIcon from "./CodeIcon.vue";
 import { REPOSITORY_OWNER, REPOSITORY_NAME, ADDONS_DIRECTORY } from "@/config";
 import { computed } from "vue";
 import { formatBytes } from "@/services/format.service";
+import { vscode } from "@/services/vscode.service";
+import {
+  vsCodeButton,
+  provideVSCodeDesignSystem,
+} from "@vscode/webview-ui-toolkit";
+import { useAddonStore } from "@/stores/addonStore";
+
+provideVSCodeDesignSystem().register(vsCodeButton());
+
+const addonStore = useAddonStore();
 
 const props = defineProps<{ addon: Addon }>();
 
@@ -54,6 +94,43 @@ const description = computed(() => props.addon.description ?? "No description");
 const size = computed(() =>
   props.addon.size ? formatBytes(props.addon.size) : "? B"
 );
+const canBeEnabled = computed(() =>
+  props.addon.enabled?.some((v) => v === false)
+);
+const canBeDisabled = computed(() =>
+  props.addon.enabled?.some((v) => v === true)
+);
+
+const lockAddon = () => {
+  const addon = addonStore.getAddon(props.addon.name);
+
+  if (!addon) {
+    console.warn(`Could not lock "${props.addon.name}" addon during operation`);
+    return;
+  }
+
+  addon.processing = true;
+};
+
+const open = () => {
+  vscode.postMessage("open", { name: props.addon.name });
+};
+const update = () => {
+  lockAddon();
+  vscode.postMessage("update", { name: props.addon.name });
+};
+const enable = () => {
+  lockAddon();
+  vscode.postMessage("enable", { name: props.addon.name });
+};
+const disable = () => {
+  lockAddon();
+  vscode.postMessage("disable", { name: props.addon.name });
+};
+const uninstall = () => {
+  lockAddon();
+  vscode.postMessage("uninstall", { name: props.addon.name });
+};
 </script>
 
 <style lang="scss">

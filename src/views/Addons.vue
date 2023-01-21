@@ -1,20 +1,23 @@
 <template>
-  <div id="browser">
+  <div id="browse">
     <div class="controls">
-      <button @click="refresh" :disabled="addonStore.loading" class="refresh">
+      <button class="refresh" :disabled="addonStore.loading" @click="refresh">
         <CodeIcon icon="refresh" />
       </button>
     </div>
-    <div class="addons">
-      <RemoteAddon
-        v-for="(addon, index) of addons"
-        :key="index"
-        :addon="addon"
-      />
+    <div v-if="addons.length === 0">
+      <h2 class="text-center">None Installed</h2>
+    </div>
+    <div v-else class="addons">
+      <Addon v-for="(addon, index) of addons" :key="index" :addon="addon" />
     </div>
     <vscode-progress-ring v-if="addonStore.loading" />
     <vscode-button
-      v-if="addonStore.total && addons.length < addonStore.total"
+      v-if="
+        addonStore.total &&
+        addons.length > 0 &&
+        addons.length < addonStore.total
+      "
       @click="addonStore.getPage()"
       :disabled="addonStore.loading"
       class="more"
@@ -22,35 +25,35 @@
     >
   </div>
 </template>
+
 <script setup lang="ts">
-import { onMounted, computed } from "vue";
+import { computed, onMounted } from "vue";
+import { useAddonStore } from "@/stores/addonStore";
 import CodeIcon from "@/components/CodeIcon.vue";
-import RemoteAddon from "@/components/RemoteAddon.vue";
-import { useRemoteAddonStore } from "@/stores/remoteAddons";
 
 import {
   provideVSCodeDesignSystem,
   vsCodeProgressRing,
-  vsCodeButton,
 } from "@vscode/webview-ui-toolkit";
+import Addon from "@/components/Addon.vue";
 
-provideVSCodeDesignSystem().register(vsCodeProgressRing(), vsCodeButton());
+provideVSCodeDesignSystem().register(vsCodeProgressRing());
 
-const addonStore = useRemoteAddonStore();
+const addonStore = useAddonStore();
 
 const addons = computed(() => addonStore.sortedByName);
 
 const refresh = () => {
   if (addonStore.loading) return;
   addonStore.addons = [];
-  addonStore.getPage(1);
+  addonStore.refresh();
 };
 
 onMounted(() => addonStore.getPage());
 </script>
 
-<style lang="scss">
-#browser {
+<style scoped lang="scss">
+#browse {
   width: 100%;
 
   > .controls {
@@ -72,7 +75,8 @@ onMounted(() => addonStore.getPage());
   .addons {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.4em;
+    margin: 0px 0.5em;
   }
 
   .more {

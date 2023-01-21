@@ -40,39 +40,28 @@ window.addEventListener("message", (event: MessageEvent) => {
 
 // Save and restore state using Pinia and VS Code
 // https://code.visualstudio.com/api/extension-guides/webview#persistence
-import {
-  useRemoteAddonStore,
-  type RemoteAddonStore,
-} from "./stores/remoteAddons";
-import {
-  useLocalAddonsStore,
-  type LocalAddonsStore,
-} from "./stores/localAddons.store";
+import { useAddonStore, type AddonStore } from "./stores/addonStore";
 import { useAppStore, type AppStore } from "./stores/app";
 
 type State = {
-  addonStore: RemoteAddonStore;
-  installedAddonStore: LocalAddonsStore;
+  addonStore: AddonStore;
   appStore: AppStore;
 };
 
-const remoteAddonStore = useRemoteAddonStore();
-const installedAddonStore = useLocalAddonsStore();
+const addonStore = useAddonStore();
 const appStore = useAppStore();
 
 const previousState = vscode.getState() as State;
 
 if (previousState) {
-  remoteAddonStore.$state = previousState.addonStore;
-  installedAddonStore.$state = previousState.installedAddonStore;
-  installedAddonStore.refresh();
+  addonStore.$state = previousState.addonStore;
   appStore.$state = previousState.appStore;
+  addonStore.refresh();
 }
 
 const saveState = () => {
   const state: State = {
-    addonStore: remoteAddonStore.$state,
-    installedAddonStore: installedAddonStore.$state,
+    addonStore: addonStore.$state,
     appStore: appStore.$state,
   };
 
@@ -80,6 +69,5 @@ const saveState = () => {
 };
 
 // Save state on update to stores
-remoteAddonStore.$subscribe(() => saveState());
-installedAddonStore.$subscribe(() => saveState());
+addonStore.$subscribe(() => saveState());
 appStore.$subscribe(() => saveState());

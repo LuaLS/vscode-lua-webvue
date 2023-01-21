@@ -1,4 +1,4 @@
-import { useLocalAddonsStore } from "@/stores/localAddons.store";
+import { useAddonStore } from "@/stores/addonStore";
 
 type Message = {
   data: {
@@ -9,7 +9,7 @@ type Message = {
 
 /** Set a value in the `localAddonStore` state */
 export default (message: Message) => {
-  const localAddonStore = useLocalAddonsStore();
+  const localAddonStore = useAddonStore();
 
   const { property, value } = message.data;
 
