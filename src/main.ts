@@ -56,6 +56,7 @@ const previousState = vscode.getState() as State;
 if (previousState) {
   addonStore.$state = previousState.addonStore;
   appStore.$state = previousState.appStore;
+  addonStore.refresh();
 }
 
 const saveState = () => {
