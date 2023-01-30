@@ -59,6 +59,7 @@
           v-if="addon.installed"
           appearance="secondary"
           @click="uninstall"
+          :disabled="addon.processing"
         >
           Uninstall
         </vscode-button>
