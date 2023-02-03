@@ -39,7 +39,7 @@ First, we will have to set up the VS Code extension.
 1. Extension setup
    1. Run `git clone --recurse-submodules $REPO`, where `$REPO` is your preferred clone URL from [`vscode-lua`][vscode-lua].
 
-   2. Download a language server binary from [`lua-language-server`](https://github.com/sumneko/lua-language-server/releases/latest) for your machine.
+   2. Download a language server binary from [`lua-language-server`](https://github.com/LuaLS/lua-language-server/releases/latest) for your machine.
 
    3. Unzip the compressed file and copy its contents to your `vscode-lua` clone under the `server/` directory.
 
