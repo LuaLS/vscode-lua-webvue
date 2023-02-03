@@ -4,4 +4,4 @@ export const REPOSITORY_NAME = "LLS-Addons";
 export const ADDONS_DIRECTORY = "addons";
 
 export const FEEDBACK_URL =
-  "https://github.com/carsakiller/vscode-lua-webvue/discussions";
+  "https://github.com/LuaLS/vscode-lua-webvue/discussions";
