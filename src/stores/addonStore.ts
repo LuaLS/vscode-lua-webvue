@@ -22,7 +22,10 @@ export const useAddonStore = defineStore("addons", {
     sortedByName(state): Addon[] {
       return [...state.addons].sort((a, b) => {
         if (a.hasUpdate) return -1;
-        return a.name.localeCompare(b.name);
+        const aName = a.displayName ?? a.name;
+        const bName = b.displayName ?? b.name;
+
+        return aName.localeCompare(bName);
       });
     },
   },
