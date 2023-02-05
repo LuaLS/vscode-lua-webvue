@@ -23,6 +23,9 @@
       class="more"
       >Load More</vscode-button
     >
+    <div id="addon-list-count">
+      Showing {{ addonStore.addons.length }} of {{ addonStore.total }}
+    </div>
   </div>
 </template>
 
@@ -83,6 +86,13 @@ onMounted(() => addonStore.getPage());
     display: block;
     width: fit-content;
     margin: 1rem auto 1rem auto;
+  }
+
+  #addon-list-count {
+    margin: 0.5em auto 0px auto;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9em;
   }
 }
 </style>
