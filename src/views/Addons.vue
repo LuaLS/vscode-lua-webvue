@@ -25,7 +25,7 @@
     <div v-if="addons.length === 0">
       <h2 class="text-center">Nothing to show 🕳️</h2>
     </div>
-    <div v-else class="addons">
+    <div v-else class="addons" :class="skipTransition ? 'noAnimate' : ''">
       <TransitionGroup name="fade">
         <Addon
           v-for="(addon, index) of addons"
@@ -98,8 +98,10 @@ const addons = computed(() => {
 type FilterOptions = "enabled" | "installed";
 const filters = ref({ enabled: false, installed: false, regex: "" });
 
-const updateFilter = (e: Event, filter: FilterOptions) =>
-  (filters.value[filter] = (e.target as HTMLInputElement).checked);
+const updateFilter = (e: Event, filter: FilterOptions) => {
+  skipTransition.value = false;
+  filters.value[filter] = (e.target as HTMLInputElement).checked;
+};
 
 const refresh = () => {
   if (addonStore.loading) return;
@@ -107,24 +109,12 @@ const refresh = () => {
   addonStore.refresh();
 };
 
+const skipTransition = ref(false);
 const search = (e: Event) => {
+  skipTransition.value = true;
+
   const element = e.target as HTMLInputElement;
   let value = element.value;
-
-  filters.value = { enabled: false, installed: false, regex: "" };
-
-  const enabledIndex = value.indexOf("@enabled");
-  const installedIndex = value.indexOf("@installed");
-
-  if (enabledIndex !== -1) {
-    filters.value.enabled = true;
-    value = value.replace("@enabled", "");
-  }
-  if (installedIndex !== -1) {
-    filters.value.installed = true;
-    value = value.replace("@installed", "");
-  }
-
   filters.value.regex = value.trim();
 };
 
@@ -167,21 +157,23 @@ onMounted(() => addonStore.getPage());
     gap: 0.4em;
     margin: 0px 0.5em;
 
-    .fade-enter-active {
-      transition: all var(--reverse-duration) ease-in-out;
-    }
-    .fade-leave-active {
-      transition: all var(--duration) ease-in-out;
-    }
-    .fade-enter-from,
-    .fade-leave-to {
-      opacity: 0;
-      transform: translate(-100%);
-    }
-    .fade-enter-to,
-    .fade-leave-from {
-      opacity: 1;
-      transform: translate(0%);
+    &:not(.noAnimate) {
+      .fade-enter-active {
+        transition: all var(--reverse-duration) ease-in-out;
+      }
+      .fade-leave-active {
+        transition: all var(--duration) ease-in-out;
+      }
+      .fade-enter-from,
+      .fade-leave-to {
+        opacity: 0;
+        transform: translate(-100%);
+      }
+      .fade-enter-to,
+      .fade-leave-from {
+        opacity: 1;
+        transform: translate(0%);
+      }
     }
   }
 
