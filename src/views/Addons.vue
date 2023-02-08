@@ -40,8 +40,8 @@
     <vscode-button
       v-if="
         addonStore.total &&
-        addons.length > 0 &&
-        addons.length < addonStore.total
+        addonStore.addons.length > 0 &&
+        addonStore.addons.length < addonStore.total
       "
       @click="addonStore.getPage()"
       :disabled="addonStore.loading"
