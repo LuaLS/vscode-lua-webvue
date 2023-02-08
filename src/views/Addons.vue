@@ -1,6 +1,23 @@
 <template>
   <div id="browse">
     <div class="controls">
+      <vscode-text-field
+        type="search"
+        name="search"
+        autofocus="true"
+        id="search"
+        placeholder="Search"
+        @input="search"
+      >
+        <!-- eslint-disable-next-line vue/no-deprecated-slot-attribute -->
+        <CodeIcon slot="start" icon="search" />
+      </vscode-text-field>
+      <vscode-checkbox @change="(e: Event) => updateFilter(e, 'enabled')">
+        Enabled
+      </vscode-checkbox>
+      <vscode-checkbox @change="(e: Event) => updateFilter(e, 'installed')"
+        >Installed</vscode-checkbox
+      >
       <button class="refresh" :disabled="addonStore.loading" @click="refresh">
         <CodeIcon icon="refresh" />
       </button>
@@ -24,32 +41,81 @@
       >Load More</vscode-button
     >
     <div id="addon-list-count">
-      Showing {{ addonStore.addons.length }} of {{ addonStore.total }}
+      {{ addons.length }} / {{ addonStore.addons.length }} /
+      {{ addonStore.total }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useAddonStore } from "@/stores/addonStore";
 import CodeIcon from "@/components/CodeIcon.vue";
+import Addon from "@/components/Addon.vue";
 
 import {
   provideVSCodeDesignSystem,
+  vsCodeCheckbox,
   vsCodeProgressRing,
+  vsCodeTextField,
 } from "@vscode/webview-ui-toolkit";
-import Addon from "@/components/Addon.vue";
 
-provideVSCodeDesignSystem().register(vsCodeProgressRing());
+provideVSCodeDesignSystem().register(
+  vsCodeProgressRing(),
+  vsCodeTextField(),
+  vsCodeCheckbox()
+);
 
 const addonStore = useAddonStore();
 
-const addons = computed(() => addonStore.sortedByName);
+const addons = computed(() => {
+  const addons = addonStore.sortedByName;
+
+  return addons.filter((addon) => {
+    if (filters.value.installed && !addon.installed) return false;
+    if (filters.value.enabled && !(addon.enabled ?? []).some((a) => a))
+      return false;
+    if (filters.value.regex) {
+      const rgx = new RegExp(
+        `.*${filters.value.regex.split("").join(".*")}.*`,
+        "gi"
+      );
+      if (!rgx.test(addon.displayName ?? addon.name)) return false;
+    }
+    return true;
+  });
+});
+type FilterOptions = "enabled" | "installed";
+const filters = ref({ enabled: false, installed: false, regex: "" });
+
+const updateFilter = (e: Event, filter: FilterOptions) =>
+  (filters.value[filter] = (e.target as HTMLInputElement).checked);
 
 const refresh = () => {
   if (addonStore.loading) return;
   addonStore.addons = [];
   addonStore.refresh();
+};
+
+const search = (e: Event) => {
+  const element = e.target as HTMLInputElement;
+  let value = element.value;
+
+  filters.value = { enabled: false, installed: false, regex: "" };
+
+  const enabledIndex = value.indexOf("@enabled");
+  const installedIndex = value.indexOf("@installed");
+
+  if (enabledIndex !== -1) {
+    filters.value.enabled = true;
+    value = value.replace("@enabled", "");
+  }
+  if (installedIndex !== -1) {
+    filters.value.installed = true;
+    value = value.replace("@installed", "");
+  }
+
+  filters.value.regex = value.trim();
 };
 
 onMounted(() => addonStore.getPage());
@@ -61,8 +127,14 @@ onMounted(() => addonStore.getPage());
 
   > .controls {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding: 0px 0.3rem;
+    margin: 0px 0.2rem 0.5rem 0.2rem;
+    gap: 0.2rem;
+
+    .refresh:disabled {
+      opacity: 0.5;
+    }
 
     .refresh span {
       vertical-align: middle;
