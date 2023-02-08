@@ -1,12 +1,9 @@
 <template>
   <div class="content">
-    <header>
-      <div v-if="devMode">Development Mode Active</div>
-    </header>
-
     <RouterView />
 
     <footer>
+      <div v-if="devMode" id="dev-warn">Development Mode Active</div>
       <span class="versions">
         <span title="WebVue Version">
           <CodeIcon icon="preview" /> v{{ version }}

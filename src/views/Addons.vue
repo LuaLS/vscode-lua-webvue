@@ -124,6 +124,7 @@ onMounted(() => addonStore.getPage());
 <style scoped lang="scss">
 #browse {
   width: 100%;
+  margin-bottom: 2rem;
 
   > .controls {
     position: sticky;
