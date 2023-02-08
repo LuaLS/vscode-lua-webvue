@@ -25,7 +25,13 @@ export const useAddonStore = defineStore("addons", {
         const aName = a.displayName ?? a.name;
         const bName = b.displayName ?? b.name;
 
-        return aName.localeCompare(bName);
+        return (
+          Number(b.enabled?.some((a) => a)) -
+          Number(a.enabled?.some((a) => a)) +
+          Number(b.installed) -
+          Number(a.installed) +
+          aName.localeCompare(bName) * 0.9
+        );
       });
     },
   },

@@ -26,7 +26,15 @@
       <h2 class="text-center">Nothing to show 🕳️</h2>
     </div>
     <div v-else class="addons">
-      <Addon v-for="(addon, index) of addons" :key="index" :addon="addon" />
+      <TransitionGroup name="fade">
+        <Addon
+          v-for="(addon, index) of addons"
+          :key="addon.name"
+          :addon="addon"
+          :style="`--duration: ${(addons.length - index) / addons.length / 3}s
+          ;--reverse-duration: ${(index + 1) / addons.length / 3}s`"
+        />
+      </TransitionGroup>
     </div>
     <vscode-progress-ring v-if="addonStore.loading" />
     <vscode-button
@@ -71,7 +79,7 @@ const addonStore = useAddonStore();
 const addons = computed(() => {
   const addons = addonStore.sortedByName;
 
-  return addons.filter((addon) => {
+  const filtered = addons.filter((addon) => {
     if (filters.value.installed && !addon.installed) return false;
     if (filters.value.enabled && !(addon.enabled ?? []).some((a) => a))
       return false;
@@ -84,6 +92,8 @@ const addons = computed(() => {
     }
     return true;
   });
+
+  return filtered;
 });
 type FilterOptions = "enabled" | "installed";
 const filters = ref({ enabled: false, installed: false, regex: "" });
@@ -126,14 +136,18 @@ onMounted(() => addonStore.getPage());
   width: 100%;
 
   > .controls {
+    position: sticky;
+    top: 0px;
+    background: #1b1b1df5;
+    z-index: 5;
     display: flex;
     justify-content: space-between;
-    padding: 0px 0.3rem;
+    padding: 0.3rem;
     margin: 0px 0.2rem 0.5rem 0.2rem;
     gap: 0.2rem;
 
     .refresh:disabled {
-      opacity: 0.5;
+      opacity: 0.3;
     }
 
     .refresh span {
@@ -152,6 +166,23 @@ onMounted(() => addonStore.getPage());
     flex-direction: column;
     gap: 0.4em;
     margin: 0px 0.5em;
+
+    .fade-enter-active {
+      transition: all var(--reverse-duration) ease-in-out;
+    }
+    .fade-leave-active {
+      transition: all var(--duration) ease-in-out;
+    }
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+      transform: translate(-100%);
+    }
+    .fade-enter-to,
+    .fade-leave-from {
+      opacity: 1;
+      transform: translate(0%);
+    }
   }
 
   .more {
