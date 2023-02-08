@@ -6,7 +6,7 @@
       </button>
     </div>
     <div v-if="addons.length === 0">
-      <h2 class="text-center">None Installed</h2>
+      <h2 class="text-center">Nothing to show 🕳️</h2>
     </div>
     <div v-else class="addons">
       <Addon v-for="(addon, index) of addons" :key="index" :addon="addon" />

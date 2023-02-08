@@ -20,6 +20,7 @@
           :href="FEEDBACK_URL"
           target="_blank"
           rel="nofollow noreferrer noopener external"
+          title="Feedback"
         >
           <CodeIcon icon="feedback" />
         </a>
