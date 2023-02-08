@@ -88,7 +88,8 @@ const addons = computed(() => {
         `.*${filters.value.regex.split("").join(".*")}.*`,
         "gi"
       );
-      if (!rgx.test(addon.displayName ?? addon.name)) return false;
+      if (!rgx.test(addon.displayName ?? addon.name) && !rgx.test(addon.name))
+        return false;
     }
     return true;
   });
