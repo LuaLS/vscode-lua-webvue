@@ -37,7 +37,7 @@ export const useAddonStore = defineStore("addons", {
   },
   actions: {
     getPage() {
-      vscode.postMessage("getAddonsPage", {
+      vscode.postMessage("getAddons", {
         page: this.page,
       });
       this.page++;
