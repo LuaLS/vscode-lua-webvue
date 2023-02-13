@@ -43,7 +43,6 @@ window.addEventListener("message", (event: MessageEvent) => {
 import { useAppStore, type AppStore } from "./stores/app";
 
 type State = {
-  addonStore: AddonStore;
   appStore: AppStore;
 };
 
