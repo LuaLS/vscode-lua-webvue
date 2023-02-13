@@ -37,17 +37,6 @@
       </TransitionGroup>
     </div>
     <vscode-progress-ring v-if="addonStore.loading" />
-    <vscode-button
-      v-if="
-        addonStore.total &&
-        addonStore.addons.length > 0 &&
-        addonStore.addons.length < addonStore.total
-      "
-      @click="addonStore.getPage()"
-      :disabled="addonStore.loading"
-      class="more"
-      >Load More</vscode-button
-    >
     <div id="addon-list-count">
       {{ addons.length }} / {{ addonStore.addons.length }} /
       {{ addonStore.total }}
@@ -177,12 +166,6 @@ onMounted(() => addonStore.getPage());
         transform: translate(0%);
       }
     }
-  }
-
-  .more {
-    display: block;
-    width: fit-content;
-    margin: 1rem auto 1rem auto;
   }
 
   #addon-list-count {
