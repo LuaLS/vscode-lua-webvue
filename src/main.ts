@@ -40,7 +40,6 @@ window.addEventListener("message", (event: MessageEvent) => {
 
 // Save and restore state using Pinia and VS Code
 // https://code.visualstudio.com/api/extension-guides/webview#persistence
-import { useAddonStore, type AddonStore } from "./stores/addonStore";
 import { useAppStore, type AppStore } from "./stores/app";
 
 type State = {
@@ -48,20 +47,16 @@ type State = {
   appStore: AppStore;
 };
 
-const addonStore = useAddonStore();
 const appStore = useAppStore();
 
 const previousState = vscode.getState() as State;
 
 if (previousState) {
-  addonStore.$state = previousState.addonStore;
   appStore.$state = previousState.appStore;
-  addonStore.refresh();
 }
 
 const saveState = () => {
   const state: State = {
-    addonStore: addonStore.$state,
     appStore: appStore.$state,
   };
 
@@ -69,5 +64,4 @@ const saveState = () => {
 };
 
 // Save state on update to stores
-addonStore.$subscribe(() => saveState());
 appStore.$subscribe(() => saveState());
