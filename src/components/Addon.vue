@@ -142,7 +142,7 @@ const uninstall = () => {
   align-items: stretch;
   gap: 0.2rem;
   position: relative;
-  background-color: var(--addon-background);
+  background-color: var(--panel-view-background);
   padding: 0.5em 0.4em;
   border-radius: 0.2em;
 
@@ -232,7 +232,8 @@ const uninstall = () => {
   }
 
   .bottom {
-    color: var(--text-secondary);
+    color: inherit;
+    opacity: 0.8;
   }
 }
 </style>

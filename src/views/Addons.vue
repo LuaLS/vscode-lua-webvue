@@ -119,7 +119,7 @@ onMounted(() => addonStore.getPage());
   > .controls {
     position: sticky;
     top: 0px;
-    background: #1b1b1df5;
+    background: var(--vscode-activityBar-border);
     z-index: 5;
     display: flex;
     justify-content: space-between;
@@ -171,8 +171,9 @@ onMounted(() => addonStore.getPage());
   #addon-list-count {
     margin: 0.5em auto 0px auto;
     text-align: center;
-    color: var(--text-secondary);
+    color: inherit;
     font-size: 0.9em;
+    opacity: 0.8;
   }
 }
 </style>
