@@ -16,7 +16,6 @@
   "dependencies": {
     "@vscode/codicons": "^0.0.32",
     "@vscode/webview-ui-toolkit": "^1.2.0",
-    "axios": "^1.2.1",
     "dayjs": "^1.11.7",
     "pinia": "^2.0.28",
     "sass": "^1.56.2",
