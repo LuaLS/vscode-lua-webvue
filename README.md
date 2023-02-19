@@ -47,11 +47,13 @@ First, we will have to set up the VS Code extension.
 
    5. Run `tsc --watch` in the `client/` folder. This will compile all TypeScript changes to the client as they happen.
 
+> **Note**
+> You will want to open another terminal window to run the following steps in.
+
 2. WebVue setup
-   1. Create a `webvue` directory in `client/` in your `vscode-lua` clone.
-   2. Clone this repository into `client/webvue`.
-   3. Run `npm i` to install dependencies in `client/webvue`.
-   4. Run `npm run dev` to start a [Vite][vite] local server.
+   1. Move to `client/webuve`
+   2. Run `npm i` to install dependencies in `client/webvue`.
+   3. Run `npm run dev` to start a [Vite][vite] local server.
 
 3. Testing in VS Code
    1. You can now edit the files in `client/` to modify the VS Code extension, and the files in `client/webvue/` to edit this webapp.
