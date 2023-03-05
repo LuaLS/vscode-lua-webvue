@@ -52,6 +52,7 @@ const previousState = vscode.getState() as State;
 
 if (previousState) {
   appStore.$state = previousState.appStore;
+  appStore.notifications = [];
 }
 
 const saveState = () => {

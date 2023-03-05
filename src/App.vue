@@ -2,6 +2,8 @@
   <div class="content">
     <RouterView />
 
+    <Notifications />
+
     <footer>
       <div v-if="devMode" id="dev-warn">Development Mode Active</div>
       <span class="versions">
@@ -32,6 +34,7 @@
 <script setup lang="ts">
 import "@vscode/codicons/dist/codicon.css";
 import CodeIcon from "./components/CodeIcon.vue";
+import Notifications from "./components/Notifications.vue";
 import { vscode } from "./services/vscode.service";
 import { useAppStore } from "./stores/app";
 import { FEEDBACK_URL } from "./config";

@@ -7,7 +7,6 @@ export type AddonStore = {
   addons: Addon[];
   page: number;
   total: number | null;
-  error: string | null;
 };
 
 export const useAddonStore = defineStore("addons", {
@@ -16,7 +15,6 @@ export const useAddonStore = defineStore("addons", {
     addons: [],
     page: 1,
     total: null,
-    error: null,
   }),
   getters: {
     sortedByName(state): Addon[] {
