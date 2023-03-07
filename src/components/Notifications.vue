@@ -6,7 +6,7 @@
         <div class="message">{{ message }}</div>
       </div>
       <div class="buttons">
-        <vscode-button @click="appStore.notifications.splice(0)">
+        <vscode-button @click="appStore.notifications.splice(0, 1)">
           Okay
         </vscode-button>
         <vscode-button
