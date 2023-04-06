@@ -1,4 +1,5 @@
 import { useAppStore } from "@/stores/app";
+import { NotificationLevels } from "@/types/app";
 
 type Message = {
   data: {
@@ -15,6 +16,13 @@ export default (message: Message) => {
   switch (property) {
     case "workspaceState":
       appStore.workspaceOpen = value as boolean;
+      if (!value) {
+        appStore.notifications.push({
+          level: NotificationLevels.warn,
+          message:
+            "A workspace is not currently open. Addons cannot be enabled/disabled when a workspace is not open!",
+        });
+      }
       break;
     case "clientVersion":
       appStore.clientVersion = value as string;
