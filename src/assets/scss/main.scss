@@ -103,7 +103,7 @@ span.badge {
   font-size: 0.8em;
   line-height: 1;
   vertical-align: middle;
-  background-color: #4d4d4d;
+  background-color: var(--button-secondary-hover-background);
   padding: 0.2em 0.4em;
   border-radius: 0.2em;
   width: fit-content;
