@@ -3,6 +3,7 @@ export interface Addon {
   readonly uri: string;
 
   displayName?: string;
+  authors?: string[];
   description?: string;
   size?: number;
   hasPlugin?: boolean;

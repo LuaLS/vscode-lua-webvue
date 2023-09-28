@@ -15,7 +15,8 @@
         {{ description }}
       </p>
       <div class="bottom">
-        {{ size }}
+        <div class="authors">{{ authors }}</div>
+        <div class="size">{{ size }}</div>
       </div>
     </div>
     <div class="right">
@@ -91,6 +92,19 @@ const props = defineProps<{ addon: Addon }>();
 
 const url = `https://github.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/tree/main/${ADDONS_DIRECTORY}/${props.addon.name}`;
 
+const authors = computed(() => {
+  const authors = props.addon.authors;
+
+  if (!authors) {
+    return "Unknown Author";
+  }
+
+  if (authors.length > 3) {
+    return `${authors.slice(0, 3).join(", ")} + ${authors.length - 3} more`;
+  }
+
+  return authors.join(", ");
+});
 const description = computed(() => props.addon.description ?? "No description");
 const size = computed(() =>
   props.addon.size ? formatBytes(props.addon.size) : "? B"
@@ -234,6 +248,10 @@ const uninstall = () => {
   .bottom {
     color: inherit;
     opacity: 0.8;
+
+    & > div {
+      margin: 0.5em 0px;
+    }
   }
 }
 </style>
