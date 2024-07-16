@@ -14,6 +14,7 @@
           <CodeIcon icon="server" />v{{ appStore.clientVersion }}
         </span>
       </span>
+      <span>{{ addonStore.addons.length }} / {{ addonStore.total }}</span>
       <span>
         <a
           :href="FEEDBACK_URL"
@@ -38,6 +39,9 @@ import Notifications from "./components/Notifications.vue";
 import { vscode } from "./services/vscode.service";
 import { useAppStore } from "./stores/app";
 import { FEEDBACK_URL } from "./config";
+import { useAddonStore } from "./stores/addonStore";
+
+const addonStore = useAddonStore();
 
 const appStore = useAppStore();
 
