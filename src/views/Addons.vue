@@ -36,11 +36,12 @@
         />
       </TransitionGroup>
     </div>
-    <vscode-progress-ring v-if="addonStore.loading" />
-    <div id="addon-list-count">
-      {{ addons.length }} / {{ addonStore.addons.length }} /
-      {{ addonStore.total }}
-    </div>
+    <vscode-progress-ring
+      v-if="
+        addonStore.loading ||
+        (addonStore.addons?.length ?? 0) < (addonStore.total ?? 0)
+      "
+    />
   </div>
 </template>
 

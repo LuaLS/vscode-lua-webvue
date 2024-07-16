@@ -10,4 +10,6 @@ export interface Addon {
   hasUpdate?: boolean;
   enabled?: boolean[];
   installed?: boolean;
+  tags?: string[];
+  version?: string;
 }

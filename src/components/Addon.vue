@@ -33,6 +33,17 @@
         </div>
       </div>
       <div class="controls">
+        <vscode-dropdown
+          v-if="addon.installed && (addon.tags?.length ?? 0) > 0"
+          @change="versionChange"
+          :disabled="addon.processing"
+          :value="addon.version"
+        >
+          <vscode-option>Latest</vscode-option>
+          <vscode-option v-for="tag in addon.tags" :key="tag">{{
+            tag
+          }}</vscode-option>
+        </vscode-dropdown>
         <vscode-button
           v-if="addon.hasUpdate"
           @click="update"
@@ -80,10 +91,16 @@ import { vscode } from "@/services/vscode.service";
 import {
   vsCodeButton,
   provideVSCodeDesignSystem,
+  vsCodeDropdown,
+  vsCodeOption,
 } from "@vscode/webview-ui-toolkit";
 import { useAddonStore } from "@/stores/addonStore";
 
-provideVSCodeDesignSystem().register(vsCodeButton());
+provideVSCodeDesignSystem().register(
+  vsCodeButton(),
+  vsCodeDropdown(),
+  vsCodeOption()
+);
 
 const addonStore = useAddonStore();
 
@@ -132,6 +149,11 @@ const uninstall = () => {
   lockAddon();
   vscode.postMessage("uninstall", { name: props.addon.name });
 };
+const versionChange = (e: Event) => {
+  e.stopPropagation();
+  const value = (e.target as HTMLInputElement).value;
+  vscode.postMessage("setVersion", { name: props.addon.name, version: value });
+};
 </script>
 
 <style lang="scss">
@@ -145,6 +167,7 @@ const uninstall = () => {
   background-color: var(--panel-view-background);
   padding: 0.5em 0.4em;
   border-radius: 0.2em;
+  --input-min-width: 10em;
 
   .top {
     display: flex;
